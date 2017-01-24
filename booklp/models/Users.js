@@ -5,6 +5,13 @@ var options = {discriminatorKey: 'role'};
 
 var UserSchema = new mongoose.Schema({
 	//champs de la base
+	numuser: String,
+	nom: String,
+	prenom: String,
+	pseudo: String,
+	password: String,
+	role: String,
+	nbpresence: String, 
 });
 
 UserSchema.virtual('id').get(function(){

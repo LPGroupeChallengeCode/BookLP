@@ -2,6 +2,11 @@ var mongoose = require('mongoose');
 
 var ListeSchema = new mongoose.Schema({
 	//champs de la base
+	cours: String,
+	utilisateur: String,
+	date: Date,
+	periode: String,
+	presence: String,
 });
 
 ListeSchema.virtual('id').get(function(){
