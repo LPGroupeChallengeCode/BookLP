@@ -1,4 +1,5 @@
 var express = require('express');
+var md5 = require('MD5');
 var router = express.Router();
 
 /* GET home page. */
