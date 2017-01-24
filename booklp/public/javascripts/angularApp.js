@@ -270,6 +270,7 @@ app.controller('LoginCtrl', [
 			auth.logIn($scope.user).error(function(error){
 				$scope.error = error;
 			}).then(function(){
+				//go selon role
 				$state.go('home');
 			});
 		};
