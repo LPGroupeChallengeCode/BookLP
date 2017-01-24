@@ -177,7 +177,7 @@ app.factory('listes', ['$http', '$window', 'auth',
 	};
 
 	//creer liste
-	o.createListe = function(){
+	o.createListe = function(liste){
 		return $http.post('/listes', liste, {
 			headers: {Authorization: 'Bearer '+auth.getToken()}
 		}).success(function(data){
@@ -188,8 +188,10 @@ app.factory('listes', ['$http', '$window', 'auth',
 
 	//valider presence
 	o.setStudentState = function(id, student){
-		return $http.post('/liste/'+id+'/student', student, {
+		return $http.put('/liste/'+id+'/student', student, {
 			headers: {Authorization: 'Bearer '+auth.getToken()}
+		}).success(function(){
+			$window.location = '#/espaceEtudiant';
 		});
 	};
 
@@ -242,7 +244,7 @@ app.factory('cours', ['$http', '$window', 'auth',
 	};
 
 	//creer un cours
-	o.createCours = function(){
+	o.createCours = function(cour){
 		return $http.post('/cours', cour, {
 			headers: {Authorization: 'Bearer '+auth.getToken()}
 		}).success(function(data){
@@ -276,14 +278,113 @@ app.controller('LoginCtrl', [
 		};
 	}]);
 
-//controller prof
+//controller prof : affichage de ses cours
+app.controller('EspaceProfCtrl',[
+	'$scope',
+	'cours',
+	function($scope, cours){
+		$scope.cours = cours.cours;
+	}]);
 
-//controller etudiant
+//controller etudiant: affichage des cours
+app.controller('EspaceEtudiantCtrl',[
+	'$scope',
+	'cours',
+	function($scope, cours){
+		$scope.cours = cours.cours;
+	}]);
 
 //controller liste
+app.controller('ListeDetailsCtrl',[
+	'$scope',
+	'listes',
+	'liste',
+	'auth',
+	function($scope, listes, liste, auth){
+		$scope.liste = liste;
+		
+		//affichage bouton selon role
+		$scope.CloseButton = false;
+		$scope.PresentButton = false;
+		$scope.RetardButton = false;
+
+		$scope.CloseButtonShow = function(){
+			if($scope.liste.status === "OPEN"){
+				$scope.CloseButton = true;
+			}
+		};
+
+		$scope.PresentButtonShow = function(){
+			if($scope.liste.status === "OPEN"){
+				$scope.PresentButton = true;
+			}
+		};
+
+		$scope.RetardButtonShow = function(){
+			if($scope.liste.status === "OPEN"){
+				$scope.PresentButton = false;
+			}
+		};
+
+		$scope.closeListe = function(){
+			liste.closeListe(liste);
+			if($scope.liste.status === "CLOSE"){$scope.CloseButton = false; $scope.PresentButton = false; $scope.RetardButton = true}
+		};
+
+		$scope.setStudentState = function(){
+			listes.setStudentState(liste._id, {
+				//ajouter champs étudiants
+				etudiants: $scope.etudiant
+			}).success(function(liste){
+				$scope.PresentButton = false;
+			});
+		};
+
+	}])
 
 //controller ajouter liste
+app.controller('AjouterListeCtrl',[
+	'$scope',
+	'listes',
+	function($scope, listes){
+		$scope.listes = listes.listes;
+
+		$scope.createListe = function(){
+			if(!$scope.periode || $scope.periode === ''){return;}
+
+			listes.createListe({
+				//champs de la table liste
+			});
+		};
+
+		//vider les champs de la pages
+
+	}]);
+
 
 //controller mes listes
+app.controller('MesListesCtrl',[
+	'$scope',
+	'listes',
+	function($scope, listes){
+		$scope.listes = listes.listes;
+	}]);
 
 //controller ajouter cours
+app.controller('AjouterCoursCtrl',[
+	'$scope',
+	'cours',
+	function($scope, cours){
+		$scope.cours = cours.cours;
+
+		$scope.createCours = function(){
+			if(!$scope.titre || $scope.titre === ''){return;}
+
+			cours.createCours({
+				//champs de la table liste
+			});
+		};
+
+		//vider les champs de la pages
+
+	}]);
