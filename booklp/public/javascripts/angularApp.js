@@ -312,16 +312,20 @@ app.controller('LoginCtrl', [
 app.controller('EspaceProfCtrl',[
 	'$scope',
 	'cours',
+	'auth',
 	function($scope, cours){
 		$scope.cours = cours.cours;
+		$scope.currentUserName = auth.currentUserName;
 	}]);
 
 //controller etudiant: affichage des cours
 app.controller('EspaceEtudiantCtrl',[
 	'$scope',
-	'cours',
+	'listes',
+	'auth',
 	function($scope, cours){
-		$scope.cours = cours.cours;
+		$scope.listes = cours.listes;
+		$scope.currentUserName = auth.currentUserName;
 	}]);
 
 //controller liste
@@ -332,6 +336,7 @@ app.controller('ListeDetailsCtrl',[
 	'auth',
 	function($scope, listes, liste, auth){
 		$scope.liste = liste;
+		$scope.currentUserName = auth.currentUserName;
 		
 		//affichage bouton selon role
 		$scope.CloseButton = false;
@@ -391,13 +396,13 @@ app.controller('AjouterListeCtrl',[
 			listes.createListe({
 				//champs de la table liste
 				cours : $scope.titre,
-				prof : 
-
+				date : $scope.date,
+				periode : $scope.periode,
+				status : 'OPEN'
 			});
 		};
 
 		//vider les champs de la pages
-
 	}]);
 
 
@@ -405,25 +410,32 @@ app.controller('AjouterListeCtrl',[
 app.controller('MesListesCtrl',[
 	'$scope',
 	'listes',
+	'auth',
 	function($scope, listes){
 		$scope.listes = listes.listes;
+		$scope.currentUserName = auth.currentUserName;
 	}]);
 
 //controller ajouter cours
 app.controller('AjouterCoursCtrl',[
 	'$scope',
 	'cours',
+	'auth',
 	function($scope, cours){
 		$scope.cours = cours.cours;
+		$scope.currentUserName = auth.currentUserName;
+		$scope.date = new Date();
 
 		$scope.createCours = function(){
 			if(!$scope.titre || $scope.titre === ''){return;}
 
 			cours.createCours({
 				//champs de la table liste
+				titre : $scope.titre
 			});
 		};
 
 		//vider les champs de la pages
+		$scope.titre = '';
 
 	}]);
