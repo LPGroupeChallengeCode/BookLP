@@ -3,7 +3,10 @@ var mongoose = require('mongoose');
 var CourSchema = new mongoose.Schema({
 	//champs de la base
 
-	titre : String,
+	titre : {
+		type : String,
+		unique : true
+	},
 	prof : {
 		id : {
 			type: mongoose.Schema.Types.ObjectId, 
