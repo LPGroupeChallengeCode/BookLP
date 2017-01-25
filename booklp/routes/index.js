@@ -16,7 +16,7 @@ router.get('/', function(req, res, next) {
 
 //LOGIN
 	router.post('/login', function(req, res, next){
-		if(!req.body.pseudo || !req.body.password){
+		if(!req.body.username || !req.body.password){
 			return res.status(400).json({message: 'Veuillez renseigner tous les champs'});
 		}
 
@@ -76,8 +76,8 @@ router.post('/liste', function(req, res, next){
 	});
 });
 
-//AFFICHAGE ALL LISTE PROF
-router.post('/liste', function(req, res, next){
+//AFFICHAGE ALL LISTE ETUDIANT
+router.get('/listes', function(req, res, next){
 
 	//recup info
 	Liste.find(function(err, listes){
@@ -88,15 +88,37 @@ router.post('/liste', function(req, res, next){
 	});
 });
 
+//AFFICHAGE ALL LISTE PROF
+router.get('/listes/:id/prof', function(req, res, next){
+
+	//recup info
+	Liste.findById({'prof.id': req.params.id}, function(err, listes){
+		if(err){console.log(err);
+			return next(err);}
+	//Envoie rep
+		res.json(listes);
+	});
+});
+
 //AFFICHAGE LISTE
+router.get('/myListe/:id', function(req, res, next){
+	//recup info
+	Liste.findById({'prof.id': req.params.id}, function(err, listes){
+		if(err){console.log(err); return next(err);}
+	//Envoie rep
+	res.json(listes);
+	});
+});
 
 //AFFICHAGE COURS
-
-//IMPRESSION LISTE
-
-//CLOTURE LISTE
-
-//AUTH PASSPORT
+router.get('/mycours/:id', function(req, res, next){
+	//recup info
+	Cours.findById({'prof.id': req.params.id}, function(err, cours){
+		if(err){console.log(err); return next(err);}
+	//Envoie rep
+	res.json(cours);
+	});
+});
 
 
 module.exports = router;
