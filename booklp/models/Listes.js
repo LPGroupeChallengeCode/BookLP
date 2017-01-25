@@ -2,11 +2,8 @@ var mongoose = require('mongoose');
 
 var ListeSchema = new mongoose.Schema({
 	//champs de la base
-	cours: {
-		type : String,
-		unique : true
-	},
-	prof:{
+	cours: String,
+	prof: {
 		id : {
 			type: mongoose.Schema.Types.ObjectId, 
 			ref:'User'
