@@ -60,13 +60,19 @@ app.config([
 			})
 			//ajouter liste
 			.state('ajouterListe', {
-				url: '/ajouterListe',
+				url: '/ajouterListe/:id',
 				templateUrl: '/ajouterListe.html',
 				controller: 'AjouterListeCtrl'
+				resolve: {
+					cour: ['$stateParams', 'cours',
+					function($stateParams, cours){
+						return cours.getCurrentCours($stateParams.id);
+					}]
+				}
 			})
 			//mes listes
 			.state('mesListes',{
-				url: '/myListes/:id',
+				url: '/mesListes/:id',
 				templateUrl: '/mesListes.html',
 				controller: 'MesListesCtrl',
 				resolve: {
@@ -200,8 +206,8 @@ app.factory('listes', ['$http', '$window', 'auth',
 		return $http.put('/liste/'+liste._id+'/status', null, {
 			headers: {Authorization: 'Bearer '+auth.getToken()}
 			}).success(function(data){
-				if(ticket.status === 'OPEN'){
-					ticket.status = 'CLOSE';
+				if(liste.status === 'OPEN'){
+					liste.status = 'CLOSE';
 				}
 			}
 		);
@@ -260,6 +266,15 @@ app.factory('cours', ['$http', '$window', 'auth',
 /************************** CONTROLLER *****************************/
 /*******************************************************************/
 
+//controleur navbar
+app.controller('NavCtrl', [
+	'$scope',
+	'auth',
+	function($scope, auth){
+		$scope.isLoggedIn = auth.isLoggedIn;
+		$scope.logOut = auth.logOut;
+	}]);
+
 //controller login
 app.controller('LoginCtrl', [
 	'$scope',
@@ -273,7 +288,13 @@ app.controller('LoginCtrl', [
 				$scope.error = error;
 			}).then(function(){
 				//go selon role
-				$state.go('home');
+				$scope.isProf = auth.isProf;
+				if($scope.isProf()){
+					$state.go('espaceProf');
+				}
+				else{
+					$state.go('espaceEtudiant');
+				}
 			});
 		};
 	}]);
