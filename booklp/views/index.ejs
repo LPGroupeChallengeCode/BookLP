@@ -1,11 +1,413 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+	<head>
+		<title>BookLP</title>
+		<!-- Bootstrap Core CSS -->
+	    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
+		<link href="/stylesheets/style.css" rel="stylesheet">
+		
+
+	    <!-- Custom CSS -->
+	    <link href="/stylesheets/landing-page.css" rel="stylesheet">
+
+	    <!-- Custom Fonts -->
+	    <link href="/font-awesome/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+	    <!-- jQuery -->
+	    <script src="/javascript/jquery.js"></script>
+
+	    <!-- Bootstrap Core JavaScript -->
+	    <script src="/javascript/bootstrap.min.js"></script>
+
+		<script type="text/javascript" src="/javascripts/angular.min.js"></script>
+		<!--<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>-->
+		<script type="text/javascript" src="/javascripts/angular-ui-router.js"></script>
+		<script src="/javascripts/angularApp.js"></script>
+	</head>
+
+	<body ng-app="booklp">
+
+		<!-- Navigation -->
+	    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation" ng-show="isLoggedIn()" ng-controller="NavCtrl">
+	        <div class="container topnav">
+	            <!-- Brand and toggle get grouped for better mobile display -->
+	            <div class="navbar-header">
+	                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	                    <span class="sr-only">Toggle navigation</span>
+	                    <span class="icon-bar"></span>
+	                    <span class="icon-bar"></span>
+	                    <span class="icon-bar"></span>
+	                </button>
+	                <a class="navbar-brand topnav" href="#">Book LP</a>
+	            </div>
+	            <!-- Collect the nav links, forms, and other content for toggling -->
+	            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	                <ul class="nav navbar-nav navbar-right">
+	                	<li ng-show="isProf()">
+	                		<a href="#/mesListes/{{currentUser()}}">Mes Listes</a>
+	                	</li>
+	                	<li ng-show="isProf()" class="ng-hide">
+	                		<a href="#/mesListes/{{currentUser()}}">Mes Listes</a>
+	                	</li>
+	                    <li>
+	                        <a href="">Les cours</a>
+	                    </li>
+	                    <li>
+	                        <a href="">Les professeurs</a>
+	                    </li>
+	                    <li>
+	                        <a href="">Contact</a>
+	                    </li>
+	                    <li><a href="" ng-click="logOut()">Logout</a></li>
+	                </ul>
+	            </div>
+	            
+	        </div>
+	 
+	    </nav>
+
+  		<div class="row">
+  			<ui-view></ui-view>
+  		</div>
+
+		<footer style="text-align: center"><hr><p>Book LP - Gestion de liste d'appel</p></footer>	
+
+		<!-- *************  Login template *************  -->
+
+		<script type="text/ng-template" id="/login.html">
+
+			<!-- Header -->
+			<a name="about"></a>
+			<div class="intro-header">
+
+				<div class="container">
+
+					<div class="row">
+
+						<div class="col-lg-12">
+
+							<div class="intro-message">
+								<h1>Challenge Code</h1>
+                        		<h3>Ce site permet de signaler sa présence au cours</h3>
+
+                        		<div class="container">
+                        			<h2>Challenge Code</h2>
+                        			<center>
+                        				<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Professeur</button> 
+  										<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Etudiant</button>
+  									</center>
+
+  									<!-- Modal -->
+
+  									<div class="modal fade" id="myModal" role="dialog">
+    									<div class="modal-dialog">
+
+    										<!-- Modal content-->
+									      	<div class="modal-content">
+									        	<div class="modal-header">
+									          		<button type="button" class="close" data-dismiss="modal">&times;</button>
+									          		<h4 class="modal-title">Identifiez-vous</h4>
+									        	</div>
+
+									        	<form ng-submit="logIn()" role="form" id="loginform">
+									        		<div class="form-group">
+									        			<label for="username" class="sr-only">Login</label>
+									        			<input type="text" class="form-control input-lg input-block" id="username" name="username" placeholder="username">
+									        		</div>
+									        		<label for="password" class="sr-only"> Password</label>
+									        		<input type="password" class="form-control input-lg input-block" id="password" name="password" placeholder="password">
+									        		<div class="form-group">
+									        			<button type="submit" class="btn btn-primary btn-lg btn-block" id="submitform" >enter </button>
+									        		</div>
+									        		<div class="modal-footer">
+									        			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									        		</div>
+									        	</form>
+									        </div>
+
+    									</div>
+    								</div>
+
+                        		</div>
+
+							</div>
+							
+						</div>
+						
+					</div>
+					
+				</div>
+				
+			</div>
+
+	
+			<div ng-show="error" class="alert alert-danger row">
+		    <span>{{ error.message }}</span>
+		  	</div>
+
+		  	<form ng-submit="logIn()" class="form-horizontal" role="form">
+		  		<h3 style="text-align: center">Login</h3>
+		  		<br>
+                <div class="form-group">
+                    <label for="inputUsername" class="col-sm-5 control-label">
+                            Username</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="inputUsername" placeholder="Username" ng-model="user.username" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputPassword" class="col-sm-5 control-label">
+                            Password</label>
+                    <div class="col-sm-4">
+                        <input type="password" class="form-control" id="inputPassword" placeholder="Password" ng-model="user.password" required>
+                    </div>
+                </div>
+               
+                <div class="form-group last">
+                    <div class="col-sm-offset-6 col-sm-9">
+                        <button type="submit" class="btn btn-success btn-sm">
+                            Login</button>
+                    </div>
+                </div>
+            </form>
+			
+		</script>
+
+		<!-- *************  Espace Prof template *************  -->
+
+		<script type="text/ng-template" id="/espaceProf.html">
+
+			<div class="container">
+				<h2>Bienvenue, </h2>
+				<center>
+	        		<h2 ng-show="isProf()" class="ng-hide">Liste des cours du jour</h2>
+	        		<h2 ng-show="isProf()">Liste de vos cours</h2>
+	    		</center>
+
+	    		<table class="table table-bordered">
+					<thead >
+						<tr>
+							<th></th>
+							<th></th>
+						<tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="cour in cours">
+							<td>{{cour.titre}}</td>
+							<td><a href="#/ajouterListe/{{cour._id}}">Créer une liste d'appel</a></td>
+						<tr>
+					</tbody>
+				</table>
+
+			</div>
+
+			
+
+
+			<h2 style="text-align: center">New Tickets</h2>
+			<br>
+			<table class="table table-bordered">
+					<thead >
+						<tr>
+							<th>Matière</th>
+							<th>Nom du</th>
+							<th>Priority</th>
+							<th>Reported by</th>
+							<th>Status</th>
+							<th>Action</th>
+						<tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="ticket in tickets">
+							<td>{{ticket._id}}</td>
+							<td>{{ticket.summary}}</td>
+							<td>{{ticket.priority}}</td>
+							<td>{{ticket.reporter.username}}</td>
+							<td>{{ticket.status}}</td>
+							<td><a href="#/ticket/{{ticket._id}}">Show</a></td>
+						<tr>
+					</tbody>
+				</table>
+
+		</script>	
+
+		<script type="text/ng-template" id="/tickets.html">
+
+			<h2 style="text-align: center">All Tickets</h2>
+			<br>
+
+  			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>Ticket id</th>
+						<th>Summary</th>
+						<th>Priority</th>
+						<th>Reported by</th>
+						<th>Status</th>
+						<th>Action</th>
+					<tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="ticket in tickets">
+						<td>{{ticket._id}}</td>
+						<td>{{ticket.summary}}</td>
+						<td>{{ticket.priority}}</td>
+						<td>{{ticket.reporter.username}}</td>
+						<td>{{ticket.status}}</td>
+						<td><a href="#/ticket/{{ticket._id}}">Show</a></td>
+					<tr>
+				</tbody>
+			</table>
+
+		</script>
+
+		<script type="text/ng-template" id="/myTickets.html">
+			<h2 style="text-align: center">My Tickets</h2>
+			<br>
+
+  			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>Ticket id</th>
+						<th>Summary</th>
+						<th>Priority</th>
+						<th>Reported by</th>
+						<th>Status</th>
+						<th>Action</th>
+					<tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="ticket in tickets">
+						<td>{{ticket._id}}</td>
+						<td>{{ticket.summary}}</td>
+						<td>{{ticket.priority}}</td>
+						<td>{{ticket.reporter.username}}</td>
+						<td>{{ticket.status}}</td>
+						<td><a href="#/ticket/{{ticket._id}}">Show</a></td>
+					<tr>
+				</tbody>
+			</table>
+		</script>
+
+		<script type="text/ng-template" id="/ticket.html">
+			
+			<h2 style="text-align: center"><strong>Ticket #{{ticket._id}}</strong></h2>
+
+			<br>
+
+			<div style="border:1px solid black">
+				<h4 style="text-align: center"><strong>{{ticket.summary}}</strong></h4>
+				<h4 style="text-align: right"><strong>{{ticket.creationDate | date:'medium'}}</strong></h4>
+				<hr>
+				<div class="row">
+					<div class="col-xs-4 col-xs-offset-2" >
+						<p><strong>Reported by:</strong> {{ticket.reporter.username}}</p>
+						<p><strong>Priority:</strong> {{ticket.priority}}</p>
+					</div>
+					<div class="col-xs-4 col-xs-offset-1">
+						<p><strong>Owned by:</strong> {{ticket.developer.username}}</p>
+						<p><strong>Status:</strong> {{ticket.status}}</p>
+					</div>
+				</div>
+				<div style="text-align: center">
+					<p><strong>Description :</strong></p>
+				</div>
+				<hr>
+				<div>
+					<p>{{ticket.description}}</p>
+
+					<div ng-show="isDeveloper()" style="text-align: right; padding-right: 2%; padding-bottom: 2%;">
+
+						<button class="btn btn-success" ng-click="working()" ng-show="showButton">{{button}}</button>
+					</div>
+
+
+					<div ng-hide="isDeveloper()" style="text-align: right; padding-right: 2%; padding-bottom: 2%;">
+
+						<a href="" ng-show="isOwner" ng-click="editTicketShow()">Edit ticket</a> <br>
+						<a href="" ng-show="isOwner" ng-click="deleteTicket()">Delete ticket</a>
+					</div>
+
+					<div ng-show="showMe2">
+						<form style="text-align: center" ng-submit="editTicket()">
+							<textarea rows="5" cols="50" ng-model="description">{{ticket.description}}</textarea>
+							<button type="submit" class="btn btn-success">Edit</button>
+						</form>
+					</div>
+
+				</div>
+			</div>
+
+			<br>
+			
+			<div style="border:1px solid black; margin-bottom:2%;" ng-repeat="comment in ticket.comments">
+				<div class="col-xs-4 col-xs-offset-2">
+					<p><strong>From : {{comment.author.username}}</strong></p>
+				</div>
+				<div class="col-xs-4 col-xs-offset-2">
+					<p><strong>Posted : {{comment.creationDate | date:'medium'}}</strong></p>
+				</div>
+				<br>
+				<div>
+					<p>{{comment.content}}</p>
+				</div>
+			</div>
+
+			<div style="text-align: center" >
+			<a href="" ng-click="addCommentShow()">Add a comment</a>
+			</div>
+
+			<form ng-show="showMe" style="text-align: center" ng-submit="addComment()">
+				<h3>Add a comment</h3>
+
+				<div class="from-group">
+					<textarea rows="5" cols="50"
+					class="form-input"
+					placeholder="comment"
+					ng-model="content"></textarea>
+				</div>
+				<br>
+				<button type="submit" class="btn btn-success">Post</button>
+			</form>
+		</script>
+
+		<script type="text/ng-template" id="/addTicket.html">
+
+			<div>
+				<h2 style="text-align: center">Add a Ticket</h2>
+
+				<br>
+				<form ng-submit="addTickets()">
+
+					<div class="form-group">
+						<label for="summary">Summary : </label>
+						<input class="form-control" id="summary" type="text" ng-model="summary"/>
+					</div>
+
+					<div class="form-group">
+						<label for="descrition">Description : </label>
+						<textarea class="form-control" rows="5" cols="70" ng-model="description"></textarea>
+					</div>
+
+					<div class="form-group">
+						<label for="priority">Priority : </label>
+						<select class="form-control" id="priority" ng-model="priority">
+						  <option value="TRIVIAL" selected>TRIVIAL</option>
+						  <option value="MINOR">MINOR</option>
+						  <option value="MAJOR">MAJOR</option>
+						  <option value="CRITICAL">CRITICAL</option>
+						  <option value="BLOCKER">BLOCKER</option>
+						</select>
+					</div>
+					
+					<button type="submit" class="btn btn-success col-xs-offset-6">Add Ticket</button>
+				</form>
+
+			</div>
+
+		</script>
+
+	</body>
+
 </html>

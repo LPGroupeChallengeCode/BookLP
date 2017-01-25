@@ -22,7 +22,11 @@ var ListeSchema = new mongoose.Schema({
 	etudiants : [{
 		type: mongoose.Schema.Types.ObjectId, 
 		ref: 'User'
-	}]
+	}],
+	status :  {
+		type: String, 
+		default: 'OPEN'
+	}
 });
 
 ListeSchema.virtual('id').get(function(){
