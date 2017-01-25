@@ -23,6 +23,10 @@ var UserSchema = new mongoose.Schema({
 	listes : [{
 		type: mongoose.Schema.Types.ObjectId, 
 		ref:'Liste'
+	}],
+	cours : [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref:'Cours'
 	}]
 });
 

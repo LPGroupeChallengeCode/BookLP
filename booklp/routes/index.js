@@ -1,12 +1,14 @@
 var express = require('express');
-//var md5 = require('MD5');
+var md5 = require('MD5');
 var passport = require('passport');
 var jwt = require('express-jwt');
 var mongoose = require('mongoose');
-/*var Liste = mongoose.model('Liste');
+var Liste = mongoose.model('Liste');
 var User = mongoose.model('User');
-var Cours = mongoose.model('Cours');*/
+var Cours = mongoose.model('Cours');
+
 var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
+
 var router = express.Router();
 
 /* GET home page. */
@@ -31,94 +33,136 @@ router.get('/', function(req, res, next) {
 		})(req, res, next);
 	});
 
-//PRESENCE
-	router.put('/liste/:id/etudiant', auth, function(req, res, next){
+//GET COURS
+	router.get('/mycours/:id', function(req, res, next){
+		//recup info
+		Cours.findById({'prof.id': req.params.id}, function(err, cours){
+			if(err){console.log(err); return next(err);}
+			//Envoie rep
+			res.json(cours);
+		});
+	});
+
+//POST COURS
+	router.post('/cours', function(req, res, next){
+	
+		// creation objet
+		var cour = new Cours(req.body);
+		//assignation valeurs
+		cour.prof.id = req.payload._id;
+		cour.titre = req.body.titre;
+		//save
+		cour.save(function(err, cours){
+			if(err){console.log(err); return next(err);}
+
+			User.findById(cour.prof.id, function(err, user){
+				if(err){console.log(err); return next(err);}
+				user.cours.push(cour);
+				user.save(function(err, user){
+					if(err){console.log(err); return next(err);}
+					res.json(cour);
+				});
+			});
+		});
+	});
+
+//preloading liste 
+	router.param('liste', function(req, res, next, id){
+		var query = Liste.findById(id);
+
+		query.exec(function(err, liste){
+			if(err){console.log(err); return next(err);}
+			if(!liste){console.log(err); return next(new Error('Liste introuvable'));}
+
+			req.liste = liste;
+			return next();
+		});
+	});
+
+//GET LISTES
+	router.get('/listes', function(req, res, next){
+
+		//recup info
+		Liste.find(function(err, listes){
+			if(err){console.log(err); return next(err);}
+		//Envoie rep
+			res.json(listes);
+		});
+	});
+
+//GET LISTE
+	router.get('/liste/:liste', function(req, res){
+		req.liste.populate('etudiants', function(err, liste){
+			if(err){console.log(err); return next(err);}
+			res.json(liste);
+		});
+	});
+	
+//GET MES LISTES
+	router.get('/mesListes/:id', function(req, res, next){
+		//recup info
+		Liste.findById({'prof.id': req.params.id}, function(err, listes){
+			if(err){console.log(err); return next(err);}
+		//Envoie rep
+		res.json(listes);
+		});
+	});
+
+//POST LISTE
+	router.post('/liste', function(req, res, next){
+	
+		// creation objet
+		var liste = new Liste(req.body);
+		//assignation valeurs
+		liste.cours = req.body.cours
+		liste.prof.id = req.payload._id;
+		liste.date = req.body.date;
+		liste.periode = req.body.periode;
+		//save
+		liste.save(function(err, liste){
+			if(err){console.log(err); return next(err);}
+
+			User.findById(liste.prof.id, function(err, user){
+				if(err){console.log(err); return next(err);}
+				user.listes.push(liste);
+				user.save(function(err, user){
+					if(err){console.log(err); return next(err);}
+					res.json(liste);
+				});
+			});	
+		});
+	});
+
+//PUT PRESENCE ELEVE
+	router.put('/liste/:id/student', auth, function(req, res, next){
+		
 		Liste.findById(req.params.id, function(err, liste){
 			if(err){console.log(err); return next(err);}
-			liste.etudiants = req.body.etudiant;
+
+			liste.etudiants.id = req.payload._id;
+			liste.etudiants.etat = req.body.etat;
+			liste.etudiants.date = req.body.date;
 			liste.save(function(err, liste){
 				if(err){console.log(err); return next(err);}
 				res.json(liste);
 			});
 		});
+
 	});
 
-//CREATION COURS
-router.post('/cours', function(req, res, next){
-	
-	// creation objet
-	var cours = new Cours(req.body);
-	//assignation valeurs
-	cours.prof.id = req.payload._id;
-	cours.titre = req.payload.titre;
-	//save
-	cours.save(function(err, cours){
-		if(err){console.log(err);
-			return next(err);}
+//PUT ETAT LISTE
+	router.put('/liste/:liste/student', auth, function(req, res, next){
+		
+		req.liste.status(function(err, liste){
+			if(err){console.log(err); return next(err);}
+			req.liste.etudiants.etat = req.body.etat;
+			req.liste.etudiants.date = req.body.date;
+
+			req.liste.save(function(err, liste){
+				if(err){console.log(err); return next(err);}
+				res.json(liste);
+			});
+		});
 	});
-	//res.json({test : req.body.test});
-});
-
-//CREATION LISTE
-router.post('/liste', function(req, res, next){
-	
-	// creation objet
-	var liste = new Liste(req.body);
-	//assignation valeurs
-	liste.prof.nom = req.payload.nom;
-	liste.date = req.payload.date;
-	liste.heure = req.payload.heure;
-	liste.periode = req.payload.periode;
-	//save
-	liste.save(function(err, liste){
-		if(err){console.log(err);
-			return next(err);}
-	});
-});
-
-//AFFICHAGE ALL LISTE ETUDIANT
-router.get('/listes', function(req, res, next){
-
-	//recup info
-	Liste.find(function(err, listes){
-		if(err){console.log(err);
-			return next(err);}
-	//Envoie rep
-		res.json(listes);
-	});
-});
-
-//AFFICHAGE ALL LISTE PROF
-router.get('/listes/:id/prof', function(req, res, next){
-
-	//recup info
-	Liste.findById({'prof.id': req.params.id}, function(err, listes){
-		if(err){console.log(err);
-			return next(err);}
-	//Envoie rep
-		res.json(listes);
-	});
-});
-
-//AFFICHAGE LISTE
-router.get('/myListe/:id', function(req, res, next){
-	//recup info
-	Liste.findById({'prof.id': req.params.id}, function(err, listes){
-		if(err){console.log(err); return next(err);}
-	//Envoie rep
-	res.json(listes);
-	});
-});
-
-//AFFICHAGE COURS
-router.get('/mycours/:id', function(req, res, next){
-	//recup info
-	Cours.findById({'prof.id': req.params.id}, function(err, cours){
-		if(err){console.log(err); return next(err);}
-	//Envoie rep
-	res.json(cours);
-	});
-});
-
 
 module.exports = router;

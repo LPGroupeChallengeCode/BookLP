@@ -40,7 +40,7 @@ app.config([
 				templateUrl: '/espaceEtudiant.html',
 				controller: 'EspaceEtudiantCtrl',
 				resolve:{
-					courPromise: ['cours',
+					courPromise: ['listes',
 					function(cours){
 						return cours.getAll();
 					}]
@@ -186,6 +186,13 @@ app.factory('listes', ['$http', '$window', 'auth',
 		listes: []
 	};
 
+	//afficher toutes les listes
+	o.getAll = function(){
+		return $http.get('/listes').success(function(data){
+			angular.copy(data, o.listes);
+		});
+	};
+
 	//afficher listes du prof
 	o.getProfListes = function(id){
 		return $http.get('/mesListes/'+id).success(function(data){
@@ -195,14 +202,14 @@ app.factory('listes', ['$http', '$window', 'auth',
 
 	//afficher la liste ouverte
 	o.getCurrentListe = function(id){
-		return $http.get('/listeOuverte/'+id).success(function(data){
+		return $http.get('/liste/'+id).success(function(data){
 			angular.copy(data, o.listes);
 		});
 	};
 
 	//creer liste
 	o.createListe = function(liste){
-		return $http.post('/listes', liste, {
+		return $http.post('/liste', liste, {
 			headers: {Authorization: 'Bearer '+auth.getToken()}
 		}).success(function(data){
 			o.listes.push(data);
@@ -254,11 +261,11 @@ app.factory('cours', ['$http', '$window', 'auth',
 	};
 
 	//afficher tous les cours
-	o.getAll = function(){
+	/*o.getAll = function(){
 		return $http.get('/cours').success(function(data){
 			angular.copy(data, o.cours);
 		});
-	};
+	};*/
 
 	//afficher cours du profs
 	o.getMesCours = function(id){
@@ -327,7 +334,7 @@ app.controller('EspaceProfCtrl',[
 		$scope.currentUserName = auth.currentUserName;
 	}]);
 
-//controller etudiant: affichage des cours
+//controller etudiant: affichage des listes
 app.controller('EspaceEtudiantCtrl',[
 	'$scope',
 	'listes',
@@ -439,7 +446,7 @@ app.controller('AjouterListeCtrl',[
 
 			listes.createListe({
 				//champs de la table liste
-				cours : $scope.titre,
+				cours : $scope.cours,
 				date : $scope.date,
 				periode : $scope.periode,
 				status : 'OPEN'
@@ -448,7 +455,6 @@ app.controller('AjouterListeCtrl',[
 
 		//vider les champs de la pages
 	}]);
-
 
 //controller mes listes
 app.controller('MesListesCtrl',[
