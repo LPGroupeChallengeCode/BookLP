@@ -5,18 +5,6 @@ var options = {discriminatorKey: 'role'};
 
 var UserSchema = new mongoose.Schema({
 	//champs de la base
-<<<<<<< HEAD
-	numero : String,
-	nom : String,
-	prenom : String,
-	pseudo : String,
-	password : String,
-	role :{
-		type : String,
-		enum : ['Prof', 'Etudiant']
-	},
-	nbpresence: String, 
-=======
 	numero : {
 		type : String,
 		unique : true
@@ -28,12 +16,11 @@ var UserSchema = new mongoose.Schema({
 		unique : true
 	}
 	password : String,
-	role : {
-		type: String, 
-		enum: ['Prof', 'Etudiant']
+	role :{
+		type : String,
+		enum : ['Prof', 'Etudiant']
 	},
-	nbpresence : String, 
->>>>>>> b44aa086d21f5456d8a0420aa8eaa6f2bef4a2a3
+	nbpresence: String
 });
 
 UserSchema.virtual('id').get(function(){
