@@ -40,6 +40,8 @@ UserSchema.methods.generateJWT = function(){
 		username: this.username,
 		role: this.role,
 		nom: this.nom,
+		prenom: this.prenom,
+		numero: this.numero,
 		exp: parseInt(exp.getTime()/1000),
 	}, 'SECRET');
 };

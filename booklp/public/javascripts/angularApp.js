@@ -386,15 +386,37 @@ app.controller('ListeDetailsCtrl',[
 		};
 
 		$scope.setStudentState = function(){
+			$scope.date = new Date();
+			$scope.date = $filter('date')($scope.date, 'dd/MM/yyyy HH:mm');
+			$scope.present = "Present";
+			$scope.retard = "Retard";
 			
-			listes.setStudentState(liste._id, {
+			if($scope.liste.status === "OPEN"){
+
+				listes.setStudentState(liste._id, {
 				//ajouter champs étudiants
-				nom : $scope.currentUserName,
-				prenom : $scope.
-			}).success(function(liste){
-				$scope.PresentButton = false;
-				//push student
-			});
+					date : $scope.date,
+					etat : $scope.present
+				}).success(function(student){
+					$scope.PresentButton = false;
+					//push student
+					$scope.liste.etudiants.push(student);
+				});
+
+			}
+			else if($scope.liste.status === "LATE"){
+
+				listes.setStudentState(liste._id, {
+				//ajouter champs étudiants
+					date : $scope.date,
+					etat : $scope.retard
+				}).success(function(student){
+					$scope.RetardButton = false;
+					//push student
+					$scope.liste.etudiants.push(student);
+				});
+			}
+			
 		};
 
 	}])

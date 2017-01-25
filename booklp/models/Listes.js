@@ -24,7 +24,7 @@ var ListeSchema = new mongoose.Schema({
 		}
 		etat : {
 			type : String,
-			enum : ['Present', 'Absent', 'Retard']
+			enum : ['Present', 'Retard']
 		},
 		date :{
 			type : Date,
