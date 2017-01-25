@@ -2,11 +2,27 @@ var mongoose = require('mongoose');
 
 var ListeSchema = new mongoose.Schema({
 	//champs de la base
-	cours: String,
-	utilisateur: String,
-	date: Date,
-	periode: String,
-	presence: String,
+	cours : String,
+	prof : {
+		id : {
+			type: mongoose.Schema.Types.ObjectId, ref:'User',
+			username : String
+		}
+		nom : String,
+		prenom : String
+	},
+	date : { 
+		type: Date, 
+		default: Date.now
+	},
+	periode : {
+		type: String, 
+		enum: ['Matin', 'Apres-Midi']
+	},
+	etudiants : [{
+		type: mongoose.Schema.Types.ObjectId, 
+		ref: 'User'
+	}]
 });
 
 ListeSchema.virtual('id').get(function(){
