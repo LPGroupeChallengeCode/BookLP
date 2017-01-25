@@ -144,6 +144,15 @@ app.factory('auth', ['$http', '$window',
 			}
 		};
 
+		auth.currentUserName = function(){
+			if(auth.isLoggedIn()){
+				var token = auth.getToken();
+				var payload = JSON.parse($window.atob(token.split('.')[1]));
+
+				return payload.nom;
+			}
+		};
+
 		auth.logIn = function(user){
 			return $http.post('/login', user).success(function(data){
 				auth.saveToken(data.token);
@@ -367,14 +376,23 @@ app.controller('ListeDetailsCtrl',[
 app.controller('AjouterListeCtrl',[
 	'$scope',
 	'listes',
-	function($scope, listes){
+	'cour',
+	'auth',
+	function($scope, listes, cour, auth){
 		$scope.listes = listes.listes;
+		$scope.cour = cour;
+		$scope.currentUserName = auth.currentUserName;
 
-		$scope.createListe = function(){
+		$scope.date = new Date();
+
+		$scope.ajouterListe = function(){
 			if(!$scope.periode || $scope.periode === ''){return;}
 
 			listes.createListe({
 				//champs de la table liste
+				cours : $scope.titre,
+				prof : 
+
 			});
 		};
 

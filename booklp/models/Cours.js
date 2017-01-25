@@ -2,17 +2,16 @@ var mongoose = require('mongoose');
 
 var CourSchema = new mongoose.Schema({
 	//champs de la base
-	titre: {
+
+	titre : {
 		type : String,
 		unique : true
-	}
-	prof: {
+	},
+	prof : {
 		id : {
-			type: mongoose.Schema.Types.ObjectId, ref:'User'},
-			username : String
+			type: mongoose.Schema.Types.ObjectId, 
+			ref:'User'
 		}
-		nom : String,
-		prenom : String
 	}
 });
 

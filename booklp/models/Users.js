@@ -16,11 +16,11 @@ var UserSchema = new mongoose.Schema({
 		unique : true
 	}
 	password : String,
-	role : {
-		type: String, 
-		enum: ['Prof', 'Etudiant']
+	role :{
+		type : String,
+		enum : ['Prof', 'Etudiant']
 	},
-	nbpresence : String, 
+	nbpresence: String
 });
 
 UserSchema.virtual('id').get(function(){

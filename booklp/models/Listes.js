@@ -2,30 +2,38 @@ var mongoose = require('mongoose');
 
 var ListeSchema = new mongoose.Schema({
 	//champs de la base
-	cours : String,
-	prof : {
+	cours: String,
+	prof: {
 		id : {
-			type: mongoose.Schema.Types.ObjectId, ref:'User',
-			username : String
+			type: mongoose.Schema.Types.ObjectId, 
+			ref:'User'
 		}
-		nom : String,
-		prenom : String
 	},
-	date : { 
-		type: Date, 
-		default: Date.now
+	date: {
+		type : Date,
+		default : Date.now
 	},
-	periode : {
-		type: String, 
-		enum: ['Matin', 'Apres-Midi']
+	periode: {
+		type : String,
+		enum : ['Matin', 'Apres-Midi']
 	},
 	etudiants : [{
-		type: mongoose.Schema.Types.ObjectId, 
-		ref: 'User'
+		id : {
+			type: mongoose.Schema.Types.ObjectId,
+			ref : 'User'
+		}
+		etat : {
+			type : String,
+			enum : ['Present', 'Absent', 'Retard']
+		},
+		date :{
+			type : Date,
+			default : Date.now
+		}
 	}],
-	status :  {
-		type: String, 
-		default: 'OPEN'
+	status : {
+		type : String,
+		default : "OPEN"
 	}
 });
 
