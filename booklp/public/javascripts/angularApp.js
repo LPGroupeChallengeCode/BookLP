@@ -153,6 +153,15 @@ app.factory('auth', ['$http', '$window',
 			}
 		};
 
+		auth.currentUserFNAme = function(){
+			if(auth.isLoggedIn()){
+				var token = auth.getToken();
+				var payload = JSON.parse($window.atob(token.split('.')[1]));
+
+				return payload.prenom;
+			}
+		};
+
 		auth.logIn = function(user){
 			return $http.post('/login', user).success(function(data){
 				auth.saveToken(data.token);
@@ -197,7 +206,7 @@ app.factory('listes', ['$http', '$window', 'auth',
 			headers: {Authorization: 'Bearer '+auth.getToken()}
 		}).success(function(data){
 			o.listes.push(data);
-			$window.location('#/espaceProf')
+			$window.location ='#/espaceProf';
 		});
 	};
 
@@ -216,6 +225,9 @@ app.factory('listes', ['$http', '$window', 'auth',
 			headers: {Authorization: 'Bearer '+auth.getToken()}
 			}).success(function(data){
 				if(liste.status === 'OPEN'){
+					liste.status = 'LATE';
+				}
+				else{
 					liste.status = 'CLOSE';
 				}
 			}
@@ -223,9 +235,6 @@ app.factory('listes', ['$http', '$window', 'auth',
 	};
 
 	//imprimer/exporter liste
-	o.printListe = function(){
-
-	};
 
 	o.exportListe = function(){
 
@@ -337,41 +346,54 @@ app.controller('ListeDetailsCtrl',[
 	function($scope, listes, liste, auth){
 		$scope.liste = liste;
 		$scope.currentUserName = auth.currentUserName;
+		$scope.currentUser = auth.currentUser;
+		$scope.listeDate = 
 		
 		//affichage bouton selon role
 		$scope.CloseButton = false;
 		$scope.PresentButton = false;
 		$scope.RetardButton = false;
 
-		$scope.CloseButtonShow = function(){
-			if($scope.liste.status === "OPEN"){
-				$scope.CloseButton = true;
-			}
-		};
-
-		$scope.PresentButtonShow = function(){
-			if($scope.liste.status === "OPEN"){
-				$scope.PresentButton = true;
-			}
-		};
-
-		$scope.RetardButtonShow = function(){
-			if($scope.liste.status === "OPEN"){
-				$scope.PresentButton = false;
-			}
-		};
+		if($scope.liste.status === "OPEN"){
+			$scope.button = 'Passer aux retards'
+			$scope.CloseButton = true;
+			$scope.PresentButton = true;
+		}
+		if($scope.liste.status === "LATE"){
+			$scope.button = 'Clore la liste';
+			$scope.CloseButton = true; 
+			$scope.PresentButton = false; 
+			$scope.RetardButton = true
+		}
+		if($scope.liste.status === "CLOSE"){
+			$scope.CloseButton = false;
+			$scope.RetardButton = false;
+			$scope.PresentButton = false;
+		}
 
 		$scope.closeListe = function(){
 			liste.closeListe(liste);
-			if($scope.liste.status === "CLOSE"){$scope.CloseButton = false; $scope.PresentButton = false; $scope.RetardButton = true}
+			if($scope.liste.status === "LATE"){
+				$scope.CloseButton = true;
+				$scope.PresentButton = false;
+				$scope.RetardButton = true
+			}
+			if($scope.liste.status === "CLOSE"){
+				$scope.CloseButton = false; 
+				$scope.PresentButton = false;
+			$scope.RetardButton = false;
+			}
 		};
 
 		$scope.setStudentState = function(){
+			
 			listes.setStudentState(liste._id, {
 				//ajouter champs étudiants
-				etudiants: $scope.etudiant
+				nom : $scope.currentUserName,
+				prenom : $scope.
 			}).success(function(liste){
 				$scope.PresentButton = false;
+				//push student
 			});
 		};
 

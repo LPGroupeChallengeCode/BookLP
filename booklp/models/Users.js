@@ -20,7 +20,10 @@ var UserSchema = new mongoose.Schema({
 		type : String,
 		enum : ['Prof', 'Etudiant']
 	},
-	nbpresence: String
+	listes : [{
+		type: mongoose.Schema.Types.ObjectId, 
+		ref:'Liste'
+	}]
 });
 
 UserSchema.virtual('id').get(function(){
@@ -36,6 +39,7 @@ UserSchema.methods.generateJWT = function(){
 		_id: this._id,
 		username: this.username,
 		role: this.role,
+		nom: this.nom,
 		exp: parseInt(exp.getTime()/1000),
 	}, 'SECRET');
 };

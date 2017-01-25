@@ -73,6 +73,10 @@
 
 			<script type="text/ng-template" id="/login.html">
 
+				<div ng-show="error" class="alert alert-danger row">
+		    		<span>{{ error.message }}</span>
+		  		</div>
+
 				<!-- Header -->
 				<a name="about"></a>
 				<div class="intro-header">
@@ -183,7 +187,7 @@
 		    		</center>
 
 		    		<p>Vous ne trouvez pas votre cours dans la liste ? </p>
-		    		<button><a href="#/ajouterCours">Créer un cours</a></button>
+		    		<button class="btn btn-primary"><a href="#/ajouterCours">Créer un cours</a></button>
 
 		    		<table class="table table-bordered">
 						<thead >
@@ -365,184 +369,45 @@
 
 		<!-- *************  Voir Liste template *************  -->
 
-		<script type="text/ng-template" id="/liste.html">
-			<div class="container">
-				<h2>Bienvenue, {{currentUserName}}</h2>
-				<center>
-	        		<h2>{{liste.prof.nom}} - {{liste.cours}} - {{liste.date}} - {{liste.periode}}</h2>
-	    		</center>
+			<script type="text/ng-template" id="/liste.html">
+				<div class="container">
+					<h2>Bienvenue, {{currentUserName}}</h2>
+					<center>
+		        		<h2>{{liste.prof.nom}} - {{liste.cours}} - {{liste.date}} - {{liste.periode}}</h2>
+		    		</center>
 
-	    		<table class="table table-bordered">
-					<thead >
-						<tr>
-							<th>Nom</th>
-							<th>Prénom</th>
-							<th>N° Etudiant</th>
-							<th>Présence</th>
-							<th>Date</th>
-						<tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="etudiant in liste.etudiants">
-							<td>{{etudiant.nom}}</td>
-							<td>{{etudiant.prenom}}</td>
-							<td>{{etudiant.numero}}</td>
-							<td>{{etudiant.etat}}</td>
-							<td>{{etudiant.date}}</td>
-						<tr>
-					</tbody>
-				</table>
+		    		<table class="table table-bordered">
+						<thead >
+							<tr>
+								<th>Nom</th>
+								<th>Prénom</th>
+								<th>N° Etudiant</th>
+								<th>Présence</th>
+								<th>Date</th>
+							<tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="etudiant in liste.etudiants">
+								<td>{{etudiant.nom}}</td>
+								<td>{{etudiant.prenom}}</td>
+								<td>{{etudiant.numero}}</td>
+								<td>{{etudiant.etat}}</td>
+								<td>{{etudiant.date}}</td>
+							<tr>
+						</tbody>
+					</table>
 
-				
-
-			</div>
-		</script>
-
-		<script type="text/ng-template" id="/myTickets.html">
-			<h2 style="text-align: center">My Tickets</h2>
-			<br>
-
-  			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>Ticket id</th>
-						<th>Summary</th>
-						<th>Priority</th>
-						<th>Reported by</th>
-						<th>Status</th>
-						<th>Action</th>
-					<tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="ticket in tickets">
-						<td>{{ticket._id}}</td>
-						<td>{{ticket.summary}}</td>
-						<td>{{ticket.priority}}</td>
-						<td>{{ticket.reporter.username}}</td>
-						<td>{{ticket.status}}</td>
-						<td><a href="#/ticket/{{ticket._id}}">Show</a></td>
-					<tr>
-				</tbody>
-			</table>
-		</script>
-
-		<script type="text/ng-template" id="/ticket.html">
-			
-			<h2 style="text-align: center"><strong>Ticket #{{ticket._id}}</strong></h2>
-
-			<br>
-
-			<div style="border:1px solid black">
-				<h4 style="text-align: center"><strong>{{ticket.summary}}</strong></h4>
-				<h4 style="text-align: right"><strong>{{ticket.creationDate | date:'medium'}}</strong></h4>
-				<hr>
-				<div class="row">
-					<div class="col-xs-4 col-xs-offset-2" >
-						<p><strong>Reported by:</strong> {{ticket.reporter.username}}</p>
-						<p><strong>Priority:</strong> {{ticket.priority}}</p>
-					</div>
-					<div class="col-xs-4 col-xs-offset-1">
-						<p><strong>Owned by:</strong> {{ticket.developer.username}}</p>
-						<p><strong>Status:</strong> {{ticket.status}}</p>
-					</div>
-				</div>
-				<div style="text-align: center">
-					<p><strong>Description :</strong></p>
-				</div>
-				<hr>
-				<div>
-					<p>{{ticket.description}}</p>
-
-					<div ng-show="isDeveloper()" style="text-align: right; padding-right: 2%; padding-bottom: 2%;">
-
-						<button class="btn btn-success" ng-click="working()" ng-show="showButton">{{button}}</button>
+					<div ng-show="isProf()" >
+						<button class="btn btn-success" ng-click="closeListe()" ng-show="CloseButton">{{button}}</button>
 					</div>
 
-
-					<div ng-hide="isDeveloper()" style="text-align: right; padding-right: 2%; padding-bottom: 2%;">
-
-						<a href="" ng-show="isOwner" ng-click="editTicketShow()">Edit ticket</a> <br>
-						<a href="" ng-show="isOwner" ng-click="deleteTicket()">Delete ticket</a>
-					</div>
-
-					<div ng-show="showMe2">
-						<form style="text-align: center" ng-submit="editTicket()">
-							<textarea rows="5" cols="50" ng-model="description">{{ticket.description}}</textarea>
-							<button type="submit" class="btn btn-success">Edit</button>
-						</form>
+					<div ng-hide="isProf()">
+						<button class="btn btn-success" ng-click="setStudentState()" ng-show="PresentButton">Présent</button>
+						<button class="btn btn-success" ng-click="setStudentState()" ng-show="RetardButton">Retard</button>
 					</div>
 
 				</div>
-			</div>
-
-			<br>
-			
-			<div style="border:1px solid black; margin-bottom:2%;" ng-repeat="comment in ticket.comments">
-				<div class="col-xs-4 col-xs-offset-2">
-					<p><strong>From : {{comment.author.username}}</strong></p>
-				</div>
-				<div class="col-xs-4 col-xs-offset-2">
-					<p><strong>Posted : {{comment.creationDate | date:'medium'}}</strong></p>
-				</div>
-				<br>
-				<div>
-					<p>{{comment.content}}</p>
-				</div>
-			</div>
-
-			<div style="text-align: center" >
-			<a href="" ng-click="addCommentShow()">Add a comment</a>
-			</div>
-
-			<form ng-show="showMe" style="text-align: center" ng-submit="addComment()">
-				<h3>Add a comment</h3>
-
-				<div class="from-group">
-					<textarea rows="5" cols="50"
-					class="form-input"
-					placeholder="comment"
-					ng-model="content"></textarea>
-				</div>
-				<br>
-				<button type="submit" class="btn btn-success">Post</button>
-			</form>
-		</script>
-
-		<script type="text/ng-template" id="/addTicket.html">
-
-			<div>
-				<h2 style="text-align: center">Add a Ticket</h2>
-
-				<br>
-				<form ng-submit="addTickets()">
-
-					<div class="form-group">
-						<label for="summary">Summary : </label>
-						<input class="form-control" id="summary" type="text" ng-model="summary"/>
-					</div>
-
-					<div class="form-group">
-						<label for="descrition">Description : </label>
-						<textarea class="form-control" rows="5" cols="70" ng-model="description"></textarea>
-					</div>
-
-					<div class="form-group">
-						<label for="priority">Priority : </label>
-						<select class="form-control" id="priority" ng-model="priority">
-						  <option value="TRIVIAL" selected>TRIVIAL</option>
-						  <option value="MINOR">MINOR</option>
-						  <option value="MAJOR">MAJOR</option>
-						  <option value="CRITICAL">CRITICAL</option>
-						  <option value="BLOCKER">BLOCKER</option>
-						</select>
-					</div>
-					
-					<button type="submit" class="btn btn-success col-xs-offset-6">Add Ticket</button>
-				</form>
-
-			</div>
-
-		</script>
+			</script>
 
 	</body>
 
