@@ -197,9 +197,9 @@
 		</script>
 
 
-<!-- *************  Espace Etudiant template *************  -->
+	<!-- *************  Espace Etudiant template *************  -->
 
-	<script type="text/ng-template" id="/espaceEtudiant.html">
+		<script type="text/ng-template" id="/espaceEtudiant.html">
 
 			<h2>Bienvenue {{currentUserName()}},</h2>
 			<center>
@@ -222,7 +222,7 @@
 				<tbody>
 					<tr ng-repeat="liste in listes">
 						<td>{{liste.cours}}</td>
-						<td>{{liste.prof.nom}}</td>
+						<td>{{liste.prof}}</td>
 						<td>{{liste.date}}</td>
 						<td>{{liste.periode}}</td>
 						<td>{{liste.status}}</td>
@@ -237,7 +237,7 @@
 
 		<script type="text/ng-template" id="/liste.html">
 			
-			<h2 style="text-align: center"><strong>{{liste.prof.nom}} - {{liste.cours}} - {{liste.date}} - {{liste.periode}}</strong></h2>
+			<h2 style="text-align: center"><strong>{{liste.prof}} - {{liste.cours}} - {{liste.date}} - {{liste.periode}}</strong></h2>
 
 			<br>
 
@@ -267,8 +267,7 @@
 			</div>
 
 			<div ng-hide="isProf()">
-				<button class="btn btn-success" ng-click="setStudentState()" ng-show="PresentButton">Présent</button>
-				<button class="btn btn-warning" ng-click="setStudentState()" ng-show="RetardButton">Retard</button>
+				<button class="btn btn-success" ng-click="setStudentState()" ng-show="PresentButton">{{button2}}</button>
 			</div>
 
 		</script>
