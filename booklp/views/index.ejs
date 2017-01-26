@@ -24,14 +24,13 @@
 	</head>
 
 	<body ng-app="booklp">
-		<div class="page-header" style="text-align: center; background-color: #bd3333; margin-bottom: 0px; margin-top: 0px; padding-top: 2%;">
-   			<h1>Listes d'apple LP Informatique</h1>
-  		</div>
-
-  		<nav class="navbar navbar-default" ng-show="isLoggedIn()" ng-controller="NavCtrl">
+		
+   <nav class="navbar navbar-default" ng-show="isLoggedIn()" ng-controller="NavCtrl">
 
 			<div class="container">
 				<ul class="nav navbar-nav">
+				
+					<li ng-show="isProf()"><a href="#/espaceProf">Liste d'appel LP Informatique</a></li>
 					<li ng-show="isProf()"><a href="#/espaceProf">Espace Prof</a></li>
 					<li ng-hide="isProf()"><a href="#/espaceEtudiant">Espace Etudiant</a></li>
 					<li ng-show="isProf()"><a href="#/listes">Listes</a></li>
@@ -42,10 +41,12 @@
 
 		</nav>
 
+  	
+
   		<div class="row">
-  			<div class="col-md-6 col-md-offset-3">
+  			
   				 <ui-view></ui-view>
-  			</div>
+  			
   		</div>
 
 		<footer style="text-align: center"><hr><p>Book LP - Gestion de liste d'appel informatisée.</p></footer>	
@@ -58,39 +59,56 @@
 		    	<span>{{ error.message }}</span>
 		  	</div>
 
-		  	<form ng-submit="logIn()" class="form-horizontal" role="form">
-		  		<h3 style="text-align: center">Login</h3>
-		  		<br>
-                <div class="form-group">
-                    <label for="inputUsername" class="col-sm-5 control-label">
-                            Username</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputUsername" placeholder="Username" ng-model="user.username" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="inputPassword" class="col-sm-5 control-label">
-                            Password</label>
-                    <div class="col-sm-4">
-                        <input type="password" class="form-control" id="inputPassword" placeholder="Password" ng-model="user.password" required>
-                    </div>
-                </div>
-               
-                <div class="form-group last">
-                    <div class="col-sm-offset-6 col-sm-9">
-                        <button type="submit" class="btn btn-success btn-sm">
-                            Login</button>
-                    </div>
-                </div>
-            </form>
+<div class="intro-header">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="intro-message">
+						<h1>Book LP</h1>
+                        <h3>Portail de gestion de présence en cours</h3>
+                        <div class="container">
+							<h2>Licence Pro IEM</h2>
+
+							<form ng-submit="logIn()" class="form-horizontal" role="form">
+							
+								<br>
+								<div class="form-group">
+									<label for="inputUsername" class="col-sm-5 control-label">
+											Username</label>
+									<div class="col-sm-4">
+										<input type="text" class="form-control" id="inputUsername" placeholder="Username" ng-model="user.username" required>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label for="inputPassword" class="col-sm-5 control-label">
+											Password</label>
+									<div class="col-sm-4">
+										<input type="password" class="form-control" id="inputPassword" placeholder="Password" ng-model="user.password" required>
+									</div>
+								</div>
+							   
+								<div class="form-group last">
+									<div>
+										<center><button type="submit" class="btn btn-success btn-sm">
+											Login</button></center>
+									</div>
+								</div>
+							</form>
 			
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</div>			
 		</script>
 
 	<!-- *************  Espace Prof template *************  -->
-
+		
 		<script type="text/ng-template" id="/espaceProf.html">
-
+			<div style="margin:5%">
 			<h2>Bienvenue {{currentUserName()}},</h2>
 			<center>
 		        <h2>Liste des cours</h2>
@@ -98,13 +116,7 @@
 
 			<br>
 
-			<table class="table table-bordered">
-				<thead >
-					<tr>
-						<th></th>
-						<th></th>
-					<tr>
-				</thead>
+			<table class="table table-striped" style="margin:2%">
 				<tbody>
 					<tr ng-repeat="cour in cours">
 						<td>{{cour.titre}}</td>
@@ -125,7 +137,7 @@
 				<br>
 				<form ng-submit="ajouterCours()">
 
-					<div class="form-group">
+					<div class="form-group"style="margin:2%">
 						<label for="titre">Titre : </label>
 						<input class="form-control" id="titre" type="text" ng-model="titre"/>
 					</div>
@@ -149,12 +161,12 @@
 
 					<div class="form-group">
 
-						<div class="form-group">
+						<div class="form-group"style="margin:2%">
 							<label for="cours">Cours : </label>
 							<input class="form-control" id="cours" type="text" ng-model="cours"/>
 						</div>
 
-						<label for="periode">Période : </label>
+						<label for="periode"style="margin:2%">Période : </label>
 												<select name="periode" id="periode" ng-model="periode">
 													<option value="Matin">Matin</option>
 													<option value="Apres-Midi">Apres-Midi</option>
@@ -171,10 +183,10 @@
 	<!-- *************  Mes Listes template *************  -->
 
 		<script type="text/ng-template" id="/listes.html">
-			<h2 style="text-align: center">Mes listes d'appel</h2>
+			<h2 style="text-align: center"style="margin:2%">Mes listes d'appel</h2>
 			<br>
 
-  			<table class="table table-bordered">
+  			<table class="table table-striped"style="margin:3%">
 				<thead>
 					<tr>
 						<th>Cours</th>
@@ -197,10 +209,10 @@
 		</script>
 
 
-	<!-- *************  Espace Etudiant template *************  -->
+<!-- *************  Espace Etudiant template *************  -->
 
-		<script type="text/ng-template" id="/espaceEtudiant.html">
-
+	<script type="text/ng-template" id="/espaceEtudiant.html">
+<div style="margin:2%"</div>
 			<h2>Bienvenue {{currentUserName()}},</h2>
 			<center>
 		        <h2>Listes d'appel</h2>
@@ -208,7 +220,7 @@
 
 			<br>
 
-			<table class="table table-bordered">
+			<table class="table table-striped"style="margin:2%">
 				<thead >
 					<tr>
 						<th>Cours</th>
@@ -241,7 +253,7 @@
 
 			<br>
 
-			<table class="table table-bordered">
+			<table class="table table-striped"style="margin:2%">
 				<thead >
 					<tr>
 						<th>Nom</th>
@@ -262,12 +274,12 @@
 				</tbody>
 			</table>
 
-			<div ng-show="isProf()" >
-				<button class="btn btn-success" ng-click="closeListe()" ng-show="CloseButton">{{button}}</button>
+			<div ng-show="isProf()" style="text-align: center;">
+				<button style="margin: 0 auto;" class="btn btn-success" ng-click="closeListe()" ng-show="CloseButton">{{button}}</button>
 			</div>
 
-			<div ng-hide="isProf()">
-				<button class="btn btn-success" ng-click="setStudentState()" ng-show="PresentButton">{{button2}}</button>
+			<div ng-hide="isProf()" style="text-align: center;">
+				<button style="margin: 0 auto;" class="btn btn-success" ng-click="setStudentState()" ng-show="PresentButton">{{button2}}</button>
 			</div>
 
 		</script>

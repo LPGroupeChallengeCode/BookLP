@@ -16,7 +16,7 @@ var users = require('./routes/users');
 
 var app = express();
 
-mongoose.connect('mongodb://localhost/booklp_test');
+mongoose.connect('mongodb://localhost/booklp');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

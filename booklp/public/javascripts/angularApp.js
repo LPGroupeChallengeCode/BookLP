@@ -372,19 +372,14 @@ app.controller('ListeDetailsCtrl',[
 
 		if($scope.liste.etudiants.length === 0){
 			if($scope.liste.status === "OPEN"){
-					//$scope.button = 'Passer aux retards';
 					$scope.button2 = 'Present';
-					//$scope.CloseButton = true;
 					$scope.PresentButton = true;
 				}
 				if($scope.liste.status === "LATE"){
-					//$scope.button = 'Clore la liste';
 					$scope.button2 = 'Retard';
-					//$scope.CloseButton = true; 
-					$scope.PresentButton = true;
+					$scope.PresentButton = false;
 				}
 				if($scope.liste.status === "CLOSE"){
-					//$scope.CloseButton = false;
 					$scope.PresentButton = false;
 				}
 		}
@@ -393,19 +388,15 @@ app.controller('ListeDetailsCtrl',[
 			angular.forEach(function(value, key){
 				if(!value.nom === $scope.currentUserName()){
 					if($scope.liste.status === "OPEN"){
-						//$scope.button = 'Passer aux retards';
 						$scope.button2 = 'Present';
-						//$scope.CloseButton = true;
 						$scope.PresentButton = true;
 					}
 					if($scope.liste.status === "LATE"){
-						//$scope.button = 'Clore la liste';
 						$scope.button2 = 'Retard';
-						//$scope.CloseButton = true; 
 						$scope.PresentButton = true;
+						
 					}
 					if($scope.liste.status === "CLOSE"){
-						//$scope.CloseButton = false;
 						$scope.PresentButton = false;
 					}
 				}
@@ -414,19 +405,14 @@ app.controller('ListeDetailsCtrl',[
 
 		if($scope.liste.status === "OPEN"){
 			$scope.button = 'Passer aux retards';
-			//$scope.button2 = 'Present';
 			$scope.CloseButton = true;
-			//$scope.PresentButton = true;
 		}
 		if($scope.liste.status === "LATE"){
 			$scope.button = 'Clore la liste';
-			//$scope.button2 = 'Retard';
 			$scope.CloseButton = true; 
-			//$scope.PresentButton = true;
 		}
 		if($scope.liste.status === "CLOSE"){
 			$scope.CloseButton = false;
-			//$scope.PresentButton = false;
 		}
 
 		$scope.closeListe = function(){
