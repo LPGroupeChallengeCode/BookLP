@@ -12,7 +12,11 @@ var CourSchema = new mongoose.Schema({
 			type: mongoose.Schema.Types.ObjectId, 
 			ref:'Prof'
 		}
-	}
+	},
+	liste:[{
+		type: mongoose.Schema.Types.ObjectId,
+		ref:'Cour'
+	}]
 });
 
 CourSchema.virtual('id').get(function(){

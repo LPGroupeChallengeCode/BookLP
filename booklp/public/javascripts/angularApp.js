@@ -19,7 +19,6 @@ app.config([
 						else{
 							$state.go('espaceEtudiant');
 						}
-						//$state.go('espaceEtudiant');
 					}
 				}]
 			})
@@ -29,9 +28,9 @@ app.config([
 				templateUrl: '/espaceProf.html',
 				controller: 'EspaceProfCtrl',
 				resolve:{
-					courPromise: ['$stateParams', 'cours', 
-					function($stateParams, cours){
-						return cours.getMesCours($stateParams.id);
+					courPromise: ['cours',
+					function(cours){
+						return cours.getAll();
 					}]
 				}
 			})
@@ -41,9 +40,9 @@ app.config([
 				templateUrl: '/espaceEtudiant.html',
 				controller: 'EspaceEtudiantCtrl',
 				resolve:{
-					courPromise: ['listes',
-					function(cours){
-						return cours.getAll();
+					listePromise: ['listes',
+					function(listes){
+						return listes.getAll();
 					}]
 				}
 			})
@@ -55,31 +54,25 @@ app.config([
 				resolve: {
 					liste: ['$stateParams', 'listes', 
 					function($stateParams, listes){
-						return listes.getCurrentListe($stateParams.id);
+						return listes.get($stateParams.id);
 					}]
 				}
 			})
 			//ajouter liste
 			.state('ajouterListe', {
-				url: '/ajouterListe/:id',
+				url: '/ajouterListe',
 				templateUrl: '/ajouterListe.html',
 				controller: 'AjouterListeCtrl',
-				resolve: {
-					cour: ['$stateParams', 'cours',
-					function($stateParams, cours){
-						return cours.getCurrentCours($stateParams.id);
-					}]
-				}
 			})
 			//mes listes
-			.state('mesListes',{
-				url: '/mesListes/:id',
-				templateUrl: '/mesListes.html',
-				controller: 'MesListesCtrl',
+			.state('listes',{
+				url: '/listes',
+				templateUrl: '/listes.html',
+				controller: 'ListesCtrl',
 				resolve: {
-					listePromise: ['$stateParams', 'listes',
-					function($stateParams, listes){
-						return listes.getMine($stateParams.id);
+					listePromise: ['listes',
+					function(listes){
+						return listes.getAll();
 					}]
 				}
 			})
@@ -192,15 +185,15 @@ app.factory('listes', ['$http', '$window', 'auth',
 		});
 	};
 
-	//afficher la liste ouverte
-	o.getCurrentListe = function(id){
-		return $http.get('/liste/'+id).success(function(data){
-			angular.copy(data, o.listes);
+	//afficher la liste
+	o.get = function(id){
+		return $http.get('/liste/'+id).then(function(res){
+			return res.data;
 		});
 	};
 
 	//creer liste
-	o.createListe = function(liste){
+	o.ajouterListe = function(liste){
 		return $http.post('/liste', liste, {
 			headers: {Authorization: 'Bearer '+auth.getToken()}
 		}).success(function(data){
@@ -211,10 +204,8 @@ app.factory('listes', ['$http', '$window', 'auth',
 
 	//valider presence
 	o.setStudentState = function(id, student){
-		return $http.put('/liste/'+id+'/student', student, {
+		return $http.post('/liste/'+id+'/student', student, {
 			headers: {Authorization: 'Bearer '+auth.getToken()}
-		}).success(function(){
-			$window.location = '#/espaceEtudiant';
 		});
 	};
 
@@ -229,6 +220,7 @@ app.factory('listes', ['$http', '$window', 'auth',
 				else{
 					liste.status = 'CLOSE';
 				}
+				$window.location = '#/espaceProf';
 			}
 		);
 	};
@@ -253,11 +245,11 @@ app.factory('cours', ['$http', '$window', 'auth',
 	};
 
 	//afficher tous les cours
-	/*o.getAll = function(){
+	o.getAll = function(){
 		return $http.get('/cours').success(function(data){
 			angular.copy(data, o.cours);
 		});
-	};*/
+	};
 
 	//afficher cours du profs
 	o.getMesCours = function(id){
@@ -267,12 +259,12 @@ app.factory('cours', ['$http', '$window', 'auth',
 	};
 
 	//creer un cours
-	o.createCours = function(cour){
+	o.ajouterCours = function(cour){
 		return $http.post('/cours', cour, {
 			headers: {Authorization: 'Bearer '+auth.getToken()}
 		}).success(function(data){
 			o.cours.push(data);
-			$window.location('#/espaceProf')
+			$window.location = '#/espaceProf';
 		});
 	}
 
@@ -289,6 +281,7 @@ app.controller('NavCtrl', [
 	'auth',
 	function($scope, auth){
 		$scope.isLoggedIn = auth.isLoggedIn;
+		$scope.isProf = auth.isProf;
 		$scope.logOut = auth.logOut;
 	}]);
 
@@ -325,6 +318,7 @@ app.controller('EspaceProfCtrl',[
 	function($scope, cours, auth){
 		$scope.cours = cours.cours;
 		$scope.currentUserName = auth.currentUserName;
+		$scope.currentUser = auth.currentUser;
 	}]);
 
 //controller etudiant: affichage des listes
@@ -345,9 +339,9 @@ app.controller('ListeDetailsCtrl',[
 	'auth',
 	function($scope, listes, liste, auth){
 		$scope.liste = liste;
+		$scope.isProf = auth.isProf;
 		$scope.currentUserName = auth.currentUserName;
 		$scope.currentUser = auth.currentUser;
-		$scope.listeDate = 
 		
 		//affichage bouton selon role
 		$scope.CloseButton = false;
@@ -372,7 +366,7 @@ app.controller('ListeDetailsCtrl',[
 		}
 
 		$scope.closeListe = function(){
-			liste.closeListe(liste);
+			listes.closeListe(liste);
 			if($scope.liste.status === "LATE"){
 				$scope.CloseButton = true;
 				$scope.PresentButton = false;
@@ -381,41 +375,28 @@ app.controller('ListeDetailsCtrl',[
 			if($scope.liste.status === "CLOSE"){
 				$scope.CloseButton = false; 
 				$scope.PresentButton = false;
-			$scope.RetardButton = false;
+				$scope.RetardButton = false;
 			}
 		};
 
 		$scope.setStudentState = function(){
-			$scope.date = new Date();
-			$scope.date = $filter('date')($scope.date, 'dd/MM/yyyy HH:mm');
-			$scope.present = "Present";
-			$scope.retard = "Retard";
 			
 			if($scope.liste.status === "OPEN"){
 
 				listes.setStudentState(liste._id, {
-				//ajouter champs étudiants
-					date : $scope.date,
-					etat : $scope.present
+					nom : $scope.currentUserName
 				}).success(function(student){
-					$scope.PresentButton = false;
 					//push student
+					console.log("succes");
 					$scope.liste.etudiants.push(student);
 				});
-
+				$scope.PresentButton = false;
 			}
-			else if($scope.liste.status === "LATE"){
+			/*else if($scope.liste.status === "LATE"){
 
-				listes.setStudentState(liste._id, {
-				//ajouter champs étudiants
-					date : $scope.date,
-					etat : $scope.retard
-				}).success(function(student){
-					$scope.RetardButton = false;
-					//push student
-					$scope.liste.etudiants.push(student);
-				});
-			}
+				listes.setStudentState(liste);
+				$scope.RetardButton = false;
+			}*/
 			
 		};
 
@@ -425,22 +406,18 @@ app.controller('ListeDetailsCtrl',[
 app.controller('AjouterListeCtrl',[
 	'$scope',
 	'listes',
-	'cour',
 	'auth',
-	function($scope, listes, cour, auth){
+	function($scope, listes, auth){
 		$scope.listes = listes.listes;
-		$scope.cour = cour;
-		$scope.currentUserName = auth.currentUserName;
-
-		$scope.date = new Date();
+		
+		$scope.currentUser = auth.currentUse;
 
 		$scope.ajouterListe = function(){
 			if(!$scope.periode || $scope.periode === ''){return;}
 
-			listes.createListe({
+			listes.ajouterListe({
 				//champs de la table liste
 				cours : $scope.cours,
-				date : $scope.date,
 				periode : $scope.periode,
 				status : 'OPEN'
 			});
@@ -450,7 +427,7 @@ app.controller('AjouterListeCtrl',[
 	}]);
 
 //controller mes listes
-app.controller('MesListesCtrl',[
+app.controller('ListesCtrl',[
 	'$scope',
 	'listes',
 	'auth',
@@ -466,19 +443,19 @@ app.controller('AjouterCoursCtrl',[
 	'auth',
 	function($scope, cours, auth){
 		$scope.cours = cours.cours;
-		$scope.currentUserName = auth.currentUserName;
-		$scope.date = new Date();
+		$scope.currentUser = auth.currentUser;
 
-		$scope.createCours = function(){
+		$scope.ajouterCours = function(){
 			if(!$scope.titre || $scope.titre === ''){return;}
-
-			cours.createCours({
+			cours.ajouterCours({
 				//champs de la table liste
 				titre : $scope.titre
 			});
 		};
-
 		//vider les champs de la pages
 		$scope.titre = '';
 
 	}]);
+
+
+

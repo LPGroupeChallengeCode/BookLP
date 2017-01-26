@@ -24,353 +24,255 @@
 	</head>
 
 	<body ng-app="booklp">
-
-		<!-- Navigation -->
-	    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation" ng-controller="NavCtrl">
-	        <div class="container topnav">
-	            <!-- Brand and toggle get grouped for better mobile display -->
-	            <div class="navbar-header">
-	                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-	                    <span class="sr-only">Toggle navigation</span>
-	                    <span class="icon-bar"></span>
-	                    <span class="icon-bar"></span>
-	                    <span class="icon-bar"></span>
-	                </button>
-	                <a class="navbar-brand topnav" href="#">Book LP</a>
-	            </div>
-	            <!-- Collect the nav links, forms, and other content for toggling -->
-	            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-	                <ul class="nav navbar-nav navbar-right"  ng-show="isLoggedIn()">
-	                	<li ng-show="isProf()">
-	                		<a href="#/mesListes/{{currentUser()}}">Mes Listes</a>
-	                	</li>
-	                    <li>
-	                        <a href="">Les cours</a>
-	                    </li>
-	                    <li>
-	                        <a href="">Les professeurs</a>
-	                    </li>
-	                    <li>
-	                        <a href="">Contact</a>
-	                    </li>
-	                    <li><a href="" ng-click="logOut()">Logout</a></li>
-	                </ul>
-	            </div>
-	            
-	        </div>
-	 
-	    </nav>
-
-  		<div class="row">
-  			<ui-view></ui-view>
+		<div class="page-header" style="text-align: center; background-color: #bd3333; margin-bottom: 0px; margin-top: 0px; padding-top: 2%;">
+   			<h1>Listes d'apple LP Informatique</h1>
   		</div>
 
-		<footer style="text-align: center"><hr><p>Book LP - Gestion de liste d'appel</p></footer>	
+  		<nav class="navbar navbar-default" ng-show="isLoggedIn()" ng-controller="NavCtrl">
 
-		<!-- *************  Login template *************  -->
+			<div class="container">
+				<ul class="nav navbar-nav">
+					<li ng-show="isProf()"><a href="#/espaceProf">Espace Prof</a></li>
+					<li ng-hide="isProf()"><a href="#/espaceEtudiant">Espace Etudiant</a></li>
+					<li ng-show="isProf()"><a href="#/listes">Listes</a></li>
+					<li ng-show="isProf()"><a href="#/ajouterCours">Créer Cours</a></li>
+					<li><a href="" ng-click="logOut()">Logout</a></li>
+				</ul>
+			</div>
+
+		</nav>
+
+  		<div class="row">
+  			<div class="col-md-6 col-md-offset-3">
+  				 <ui-view></ui-view>
+  			</div>
+  		</div>
+
+		<footer style="text-align: center"><hr><p>Book LP - Gestion de liste d'appel informatisée.</p></footer>	
+
+	<!-- *************  Login template *************  -->
 
 			<script type="text/ng-template" id="/login.html">
+	
+			<div ng-show="error" class="alert alert-danger row">
+		    	<span>{{ error.message }}</span>
+		  	</div>
 
-				<!-- Header -->
-				<a name="about"></a>
-				<div class="intro-header">
+		  	<form ng-submit="logIn()" class="form-horizontal" role="form">
+		  		<h3 style="text-align: center">Login</h3>
+		  		<br>
+                <div class="form-group">
+                    <label for="inputUsername" class="col-sm-5 control-label">
+                            Username</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="inputUsername" placeholder="Username" ng-model="user.username" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputPassword" class="col-sm-5 control-label">
+                            Password</label>
+                    <div class="col-sm-4">
+                        <input type="password" class="form-control" id="inputPassword" placeholder="Password" ng-model="user.password" required>
+                    </div>
+                </div>
+               
+                <div class="form-group last">
+                    <div class="col-sm-offset-6 col-sm-9">
+                        <button type="submit" class="btn btn-success btn-sm">
+                            Login</button>
+                    </div>
+                </div>
+            </form>
+			
+		</script>
 
-					<div class="container">
+	<!-- *************  Espace Prof template *************  -->
 
-						<div class="row">
+		<script type="text/ng-template" id="/espaceProf.html">
 
-							<div class="col-lg-12">
+			<h2>Bienvenue {{currentUserName()}},</h2>
+			<center>
+		        <h2>Liste des cours</h2>
+		    </center>
 
-								<div class="intro-message">
-									<h1>Challenge Code</h1>
-	                        		<h3>Ce site permet de signaler sa présence au cours</h3>
+			<br>
 
-	                        		<div class="container">
-	                        			<h2>Challenge Code</h2>
-	                        			<center>
-	                        				<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Professeur</button> 
-	  										<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Etudiant</button>
-	  									</center>
+			<table class="table table-bordered">
+				<thead >
+					<tr>
+						<th></th>
+						<th></th>
+					<tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="cour in cours">
+						<td>{{cour.titre}}</td>
+						<td><a href="#/ajouterListe">Créer liste d'appel</a></td>
+					<tr>
+				</tbody>
+			</table>
 
-	  									<!-- Modal -->
+		</script>	
 
-	  									<div class="modal fade" id="myModal" role="dialog">
-	    									<div class="modal-dialog">
+	<!-- *************  Creation Cours template *************  -->
 
-	    										<!-- Modal content-->
-										      	<div class="modal-content">
-										        	<div class="modal-header">
-										          		<button type="button" class="close" data-dismiss="modal">&times;</button>
-										          		<h4 class="modal-title">Identifiez-vous</h4>
-										        	</div>
+		<script type="text/ng-template" id="/ajouterCours.html">
 
-										        	<div style="margin-right: 1px; margin-left: 1px;" ng-show="error" class="alert alert-danger row">
-		    											<span>{{error.data.message}}</span>
-		  											</div>
+			<div>
+				<h2 style="text-align: center">Creer un nouveau cours</h2>
 
-										        	<form ng-submit="logIn()" role="form" id="loginform">
-										        		<div class="form-group">
-										        			<label for="username" class="sr-only">Identifiant</label>
-										        			<input type="text" class="form-control input-lg input-block" id="username" name="username" ng-model="user.username" placeholder="Identifiant">
-										        		</div>
-										        		<label for="password" class="sr-only">Mot de passe</label>
-										        		<input type="password" class="form-control input-lg input-block" id="password" name="password" ng-model="user.password" placeholder="Mot de passe">
-										        		<div class="form-group">
-										        			<button type="submit" class="btn btn-primary btn-lg btn-block" id="submitform"  style="margin-top: 15px;">Connexion </button>
-										        		</div>
-										        	</form>
-										        </div>
+				<br>
+				<form ng-submit="ajouterCours()">
 
-	    									</div>
-	    								</div>
-
-	                        		</div>
-
-								</div>
-								
-							</div>
-							
-						</div>
-						
+					<div class="form-group">
+						<label for="titre">Titre : </label>
+						<input class="form-control" id="titre" type="text" ng-model="titre"/>
 					</div>
 					
-				</div>
-				
-			</script>
+					<button type="submit" class="btn btn-success col-xs-offset-6">Créer Cours</button>
+				</form>
 
+			</div>
 
-		<!-- *************  Espace Prof template *************  -->
+		</script>
 
-			<script type="text/ng-template" id="/espaceProf.html">
+	<!-- *************  Creation Liste template *************  -->
 
-				<div class="container">
-					<h2>Bienvenue, {{currentUserName}}</h2>
-					<center>
-		        		<h2>Liste de vos cours</h2>
-		    		</center>
+		<script type="text/ng-template" id="/ajouterListe.html">
 
-		    		<p>Vous ne trouvez pas votre cours dans la liste ? </p>
-		    		<button class="btn btn-primary"><a href="#/ajouterCours">Créer un cours</a></button>
+			<div>
+				<h2 style="text-align: center">Creer une liste d'appel</h2>
 
-		    		<table class="table table-bordered">
-						<thead >
-							<tr>
-								<th></th>
-								<th></th>
-							<tr>
-						</thead>
-						<tbody>
-							<tr ng-repeat="cour in cours">
-								<td>{{cour.titre}}</td>
-								<td><a href="#/ajouterListe/{{cour._id}}">Créer une liste d'appel</a></td>
-							<tr>
-						</tbody>
-					</table>
+				<br>
+				<form ng-submit="ajouterListe()">
 
-				</div>
-			</script>
+					<div class="form-group">
 
+						<div class="form-group">
+							<label for="cours">Cours : </label>
+							<input class="form-control" id="cours" type="text" ng-model="cours"/>
+						</div>
 
-		<!-- *************  Creation Cours template *************  -->
-
-			<script type="text/ng-template" id="/ajouterCours.html">
-				
-				<a name="about"></a>
-			    <div class="intro-header">
-			        <div class="container">
-
-			            <div class="row">
-			                <div class="col-lg-12">
-			                    <div class="intro-message">
-			                        <h2>Création d'un nouveau cours</h2>
-			                        <table>
-				                        <form ng-submit="ajouterCours()" role="form" id="createCoursForm">
-				                        	
-				                        	<div class="form-group">
-												<label for="nom">Nom du professeur : </label>
-												<input class="form-control" id="nom" type="text" ng-model="nom" value="{{currentUserName}}"/>
-											</div>
-											<div class="form-group">
-												<label for="titre">Nom de la matière : </label>
-												<input class="form-control" id="titre" type="text" ng-model="titre"/>
-											</div>
-											<div class="form-group">
-												<label for="date">Date : </label>
-												<input class="form-control" id="date" ng-model="date" value="{{date | date:'dd/MM/yyyy}}" />
-											</div>
-
-											<button type="submit" class="btn btn-primary " id="submitform">Création cours</button>
-				                        </form>
-			                        </table>
-			                        
-			                    </div>
-			                </div>
-			            </div>
-			        </div>
-			    </div>
-			</script>	
-
-
-		<!-- *************  Creation Liste template *************  -->
-
-			<script type="text/ng-template" id="/ajouterListe.html">
-				
-				<a name="about"></a>
-			    <div class="intro-header">
-			        <div class="container">
-
-			            <div class="row">
-			                <div class="col-lg-12">
-			                    <div class="intro-message">
-			                        <h2>Création de la feuille de présence</h2>
-			                        <table>
-				                        <form ng-submit="ajouterListe()" role="form" id="createListForm">
-				                        	
-				                        	<div class="form-group">
-												<label for="nom">Nom du professeur : </label>
-												<input class="form-control" id="nom" type="text" ng-model="nom" value="{{currentUserName}}"/>
-											</div>
-											<div class="form-group">
-												<label for="cours">Cours : </label>
-												<input class="form-control" id="cours" type="text" ng-model="cours" value="{{cour.titre}}" />
-											</div>
-											<div class="form-group">
-												<label for="date">Date : </label>
-												<input class="form-control" id="date" ng-model="date" value="{{date | date:'dd/MM/yyyy}}" />
-											</div>
-											<div class="form-group">
-												<label for="periode">Période : </label>
+						<label for="periode">Période : </label>
 												<select name="periode" id="periode" ng-model="periode">
 													<option value="Matin">Matin</option>
 													<option value="Apres-Midi">Apres-Midi</option>
 												</select>
-											</div>
-											
-											<button type="submit" class="btn btn-primary " id="submitform" >Création liste</button>
-				                        </form>
-			                        </table>
-			                        
-			                    </div>
-			                </div>
-			            </div>
-			        </div>
-			    </div>
-			</script>	
-
-
-		<!-- *************  Mes Listes template *************  -->
-
-			<script type="text/ng-template" id="/mesListes.html">
-
-				<div class="container">
-					<h2>Bienvenue, {{currentUserName}}</h2>
-					<center>
-		        		<h2>Listes d'appel de vos matière</h2>
-		    		</center>
-
-		    		<table class="table table-bordered">
-						<thead >
-							<tr>
-								<th>Cours</th>
-								<th>Date</th>
-								<th>Periode</th>
-								<th>Status</th>
-								<th>Voir présence</th>
-							<tr>
-						</thead>
-						<tbody>
-							<tr ng-repeat="liste in listes">
-								<td>{{liste.cours}}</td>
-								<td>{{liste.date}}</td>
-								<td>{{liste.periode}}</td>
-								<td>{{liste.status}}</td>
-								<td><a href="#/liste/{{liste._id}}">Accès liste d'appel</a></td>
-							<tr>
-						</tbody>
-					</table>
-
-				</div>
-			</script>
-
-
-		<!-- *************  Espace Etudiant template *************  -->
-
-			<script type="text/ng-template" id="/espaceEtudiant.html">
-
-				<div class="container">
-					<h2>Bienvenue, {{currentUserName}}</h2>
-					<center>
-		        		<h2>Listes d'appel</h2>
-		    		</center>
-
-		    		<table class="table table-bordered">
-						<thead >
-							<tr>
-								<th>Cours</th>
-								<th>Professeur</th>
-								<th>Date</th>
-								<th>Periode</th>
-								<th>Status</th>
-								<th>Valider présence</th>
-							<tr>
-						</thead>
-						<tbody>
-							<tr ng-repeat="liste in listes">
-								<td>{{liste.cours}}</td>
-								<td>{{liste.prof.nom}}</td>
-								<td>{{liste.date}}</td>
-								<td>{{liste.periode}}</td>
-								<td>{{liste.status}}</td>
-								<td><a href="#/liste/{{liste._id}}">Accès liste d'appel</a></td>
-							<tr>
-						</tbody>
-					</table>
-
-				</div>
-			</script>
-
-
-		<!-- *************  Voir Liste template *************  -->
-
-			<script type="text/ng-template" id="/liste.html">
-				<div class="container">
-					<h2>Bienvenue, {{currentUserName}}</h2>
-					<center>
-		        		<h2>{{liste.prof.nom}} - {{liste.cours}} - {{liste.date}} - {{liste.periode}}</h2>
-		    		</center>
-
-		    		<table class="table table-bordered">
-						<thead >
-							<tr>
-								<th>Nom</th>
-								<th>Prénom</th>
-								<th>N° Etudiant</th>
-								<th>Présence</th>
-								<th>Date</th>
-							<tr>
-						</thead>
-						<tbody>
-							<tr ng-repeat="etudiant in liste.etudiants">
-								<td>{{etudiant.nom}}</td>
-								<td>{{etudiant.prenom}}</td>
-								<td>{{etudiant.numero}}</td>
-								<td>{{etudiant.etat}}</td>
-								<td>{{etudiant.date}}</td>
-							<tr>
-						</tbody>
-					</table>
-
-					<div ng-show="isProf()" >
-						<button class="btn btn-success" ng-click="closeListe()" ng-show="CloseButton">{{button}}</button>
 					</div>
+					
+					<button type="submit" class="btn btn-success col-xs-offset-6">Créer Liste</button>
+				</form>
 
-					<div ng-hide="isProf()">
-						<button class="btn btn-success" ng-click="setStudentState()" ng-show="PresentButton">Présent</button>
-						<button class="btn btn-warning" ng-click="setStudentState()" ng-show="RetardButton">Retard</button>
-					</div>
+			</div>
 
-				</div>
-			</script>
+		</script>
+
+	<!-- *************  Mes Listes template *************  -->
+
+		<script type="text/ng-template" id="/listes.html">
+			<h2 style="text-align: center">Mes listes d'appel</h2>
+			<br>
+
+  			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>Cours</th>
+						<th>Date</th>
+						<th>Periode</th>
+						<th>Status</th>
+						<th>Voir présence</th>
+					<tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="liste in listes">
+						<td>{{liste.cours}}</td>
+						<td>{{liste.date}}</td>
+						<td>{{liste.periode}}</td>
+						<td>{{liste.status}}</td>
+						<td><a href="#/liste/{{liste._id}}">Ouvrir liste</a></td>
+					<tr>
+				</tbody>
+			</table>
+		</script>
+
+
+<!-- *************  Espace Etudiant template *************  -->
+
+	<script type="text/ng-template" id="/espaceEtudiant.html">
+
+			<h2>Bienvenue {{currentUserName()}},</h2>
+			<center>
+		        <h2>Listes d'appel</h2>
+		    </center>
+
+			<br>
+
+			<table class="table table-bordered">
+				<thead >
+					<tr>
+						<th>Cours</th>
+						<th>Professeur</th>
+						<th>Date</th>
+						<th>Periode</th>
+						<th>Status</th>
+						<th>Valider présence</th>
+					<tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="liste in listes">
+						<td>{{liste.cours}}</td>
+						<td>{{liste.prof.nom}}</td>
+						<td>{{liste.date}}</td>
+						<td>{{liste.periode}}</td>
+						<td>{{liste.status}}</td>
+						<td><a href="#/liste/{{liste._id}}">Accès liste d'appel</a></td>
+					<tr>
+				</tbody>
+			</table>
+
+		</script>
+
+	<!-- *************  Voir Liste template *************  -->
+
+		<script type="text/ng-template" id="/liste.html">
+			
+			<h2 style="text-align: center"><strong>{{liste.prof.nom}} - {{liste.cours}} - {{liste.date}} - {{liste.periode}}</strong></h2>
+
+			<br>
+
+			<table class="table table-bordered">
+				<thead >
+					<tr>
+						<th>Nom</th>
+						<th>Prénom</th>
+						<th>N° Etudiant</th>
+						<th>Présence</th>
+						<th>Date</th>
+					<tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="etudiant in liste.etudiants">
+						<td>{{etudiant.nom}}</td>
+						<td>{{etudiant.prenom}}</td>
+						<td>{{etudiant.numero}}</td>
+						<td>{{etudiant.etat}}</td>
+						<td>{{etudiant.date}}</td>
+					<tr>
+				</tbody>
+			</table>
+
+			<div ng-show="isProf()" >
+				<button class="btn btn-success" ng-click="closeListe()" ng-show="CloseButton">{{button}}</button>
+			</div>
+
+			<div ng-hide="isProf()">
+				<button class="btn btn-success" ng-click="setStudentState()" ng-show="PresentButton">Présent</button>
+				<button class="btn btn-warning" ng-click="setStudentState()" ng-show="RetardButton">Retard</button>
+			</div>
+
+		</script>
+
 
 	</body>
 

@@ -5,16 +5,10 @@ var options = {discriminatorKey: 'role'};
 
 var UserSchema = new mongoose.Schema({
 	//champs de la base
-	numero : {
-		type : String,
-		unique : true
-	},
+	numero : String,
 	nom : String,
 	prenom : String,
-	username : {
-		type : String,
-		unique : true
-	},
+	username : String,
 	password : String,
 	role :{
 		type : String,

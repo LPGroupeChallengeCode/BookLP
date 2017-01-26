@@ -33,10 +33,20 @@ router.get('/', function(req, res, next) {
 		})(req, res, next);
 	});
 
-//GET COURS
-	router.get('/mycours/:id', function(req, res, next){
+//GET COUR
+	router.get('/mesCours/:id', function(req, res, next){
 		//recup info
 		Cours.findById({'prof.id': req.params.id}, function(err, cours){
+			if(err){console.log(err); return next(err);}
+			//Envoie rep
+			res.json(cours);
+		});
+	});
+
+//GET COURS
+	router.get('/cours', function(req, res, next){
+		//recup info
+		Cours.find(function(err, cours){
 			if(err){console.log(err); return next(err);}
 			//Envoie rep
 			res.json(cours);
@@ -114,49 +124,48 @@ router.get('/', function(req, res, next) {
 		// creation objet
 		var liste = new Liste(req.body);
 		//assignation valeurs
-		liste.cours = req.body.cours
-		liste.prof.id = req.payload._id;
+		liste.cours = req.body.cours;
+		liste.prof = req.payload.nom;
 		liste.date = req.body.date;
 		liste.periode = req.body.periode;
 		//save
 		liste.save(function(err, liste){
 			if(err){console.log(err); return next(err);}
 
-			User.findById(liste.prof.id, function(err, user){
+			User.findById(req.payload._id, function(err, user){
 				if(err){console.log(err); return next(err);}
 				user.listes.push(liste);
 				user.save(function(err, user){
 					if(err){console.log(err); return next(err);}
 					res.json(liste);
 				});
-			});	
+			});
+
+
 		});
 	});
 
 //PUT PRESENCE ELEVE
-	router.put('/liste/:id/student', auth, function(req, res, next){
-		
-		Liste.findById(req.params.id, function(err, liste){
-			if(err){console.log(err); return next(err);}
+	router.post('/liste/:liste/student', auth, function(req, res, next){
 
-			liste.etudiants.id = req.payload._id;
-			liste.etudiants.etat = req.body.etat;
-			liste.etudiants.date = req.body.date;
-			liste.save(function(err, liste){
-				if(err){console.log(err); return next(err);}
-				res.json(liste);
-			});
+		var student = new User(req.body);
+		student.nom = req.payload.nom;
+		student.prenom = req.payload.prenom;
+		student.numero = req.payload.numero;
+		req.liste.etudiants.push(student);
+		req.liste.save(function(err, student){
+			if(err){console.log(err); return next(err);}
+			res.json(student);
 		});
 
+		
 	});
 
 //PUT ETAT LISTE
-	router.put('/liste/:liste/student', auth, function(req, res, next){
+	router.put('/liste/:liste/status', auth, function(req, res, next){
 		
-		req.liste.status(function(err, liste){
+		req.liste.changeStatus(function(err, liste){
 			if(err){console.log(err); return next(err);}
-			req.liste.etudiants.etat = req.body.etat;
-			req.liste.etudiants.date = req.body.date;
 
 			req.liste.save(function(err, liste){
 				if(err){console.log(err); return next(err);}

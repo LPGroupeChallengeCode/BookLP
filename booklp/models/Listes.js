@@ -2,12 +2,7 @@ var mongoose = require('mongoose');
 
 var ListeSchema = new mongoose.Schema({
 	cours: String,
-	prof: {
-		id : {
-			type: mongoose.Schema.Types.ObjectId, 
-			ref:'Prof'
-		}
-	},
+	prof: String,
 	date: {
 		type : Date,
 		default : Date.now
@@ -17,13 +12,12 @@ var ListeSchema = new mongoose.Schema({
 		enum : ['Matin', 'Apres-Midi']
 	},
 	etudiants : [{
-		id : {
-			type: mongoose.Schema.Types.ObjectId,
-			ref : 'Etudiant'
-		},
+		nom : String,
+		prenom : String,
+		numero : String,
 		etat : {
 			type : String,
-			enum : ['Present', 'Retard']
+			default : 'Present'
 		},
 		date :{
 			type : Date,
@@ -46,5 +40,10 @@ ListeSchema.methods.changeStatus = function(st){
 		this.save(st);
 	};
 };
+
+ListeSchema.methods.changePresence = function(st){
+	this.etudiants.etat = 'Present';
+	this.save(st);
+}
 
 mongoose.model('Liste', ListeSchema);
