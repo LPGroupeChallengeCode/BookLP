@@ -1,5 +1,5 @@
 var express = require('express');
-var md5 = require('MD5');
+var md5 = require('md5');
 var passport = require('passport');
 var jwt = require('express-jwt');
 var mongoose = require('mongoose');
@@ -44,7 +44,7 @@ router.get('/', function(req, res, next) {
 	});
 
 //POST COURS
-	router.post('/cours', function(req, res, next){
+	router.post('/cours', auth, function(req, res, next){
 	
 		// creation objet
 		var cour = new Cours(req.body);
@@ -109,7 +109,7 @@ router.get('/', function(req, res, next) {
 	});
 
 //POST LISTE
-	router.post('/liste', function(req, res, next){
+	router.post('/liste', auth, function(req, res, next){
 	
 		// creation objet
 		var liste = new Liste(req.body);

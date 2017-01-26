@@ -14,7 +14,7 @@ var UserSchema = new mongoose.Schema({
 	pseudo : {
 		type : String,
 		unique : true
-	}
+	},
 	password : String,
 	role :{
 		type : String,

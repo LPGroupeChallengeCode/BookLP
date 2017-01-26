@@ -21,7 +21,7 @@ var ListeSchema = new mongoose.Schema({
 		id : {
 			type: mongoose.Schema.Types.ObjectId,
 			ref : 'User'
-		}
+		},
 		etat : {
 			type : String,
 			enum : ['Present', 'Retard']
