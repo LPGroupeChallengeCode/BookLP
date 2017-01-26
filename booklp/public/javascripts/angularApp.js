@@ -19,6 +19,7 @@ app.config([
 						else{
 							$state.go('espaceEtudiant');
 						}
+						//$state.go('espaceEtudiant');
 					}
 				}]
 			})
@@ -153,17 +154,8 @@ app.factory('auth', ['$http', '$window',
 			}
 		};
 
-		auth.currentUserFNAme = function(){
-			if(auth.isLoggedIn()){
-				var token = auth.getToken();
-				var payload = JSON.parse($window.atob(token.split('.')[1]));
-
-				return payload.prenom;
-			}
-		};
-
 		auth.logIn = function(user){
-			return $http.post('/login', user).then(function(data){
+			return $http.post('/login', user).success(function(data){
 				auth.saveToken(data.token);
 			});
 		};
@@ -320,6 +312,7 @@ app.controller('LoginCtrl', [
 				else if(!$scope.isProf()){
 					$state.go('espaceEtudiant');
 				}
+				//$state.go('espaceEtudiant');
 			});
 		};
 	}]);
@@ -329,7 +322,7 @@ app.controller('EspaceProfCtrl',[
 	'$scope',
 	'cours',
 	'auth',
-	function($scope, cours){
+	function($scope, cours, auth){
 		$scope.cours = cours.cours;
 		$scope.currentUserName = auth.currentUserName;
 	}]);
@@ -339,7 +332,7 @@ app.controller('EspaceEtudiantCtrl',[
 	'$scope',
 	'listes',
 	'auth',
-	function($scope, cours){
+	function($scope, cours, auth){
 		$scope.listes = cours.listes;
 		$scope.currentUserName = auth.currentUserName;
 	}]);
@@ -461,7 +454,7 @@ app.controller('MesListesCtrl',[
 	'$scope',
 	'listes',
 	'auth',
-	function($scope, listes){
+	function($scope, listes, auth){
 		$scope.listes = listes.listes;
 		$scope.currentUserName = auth.currentUserName;
 	}]);
@@ -471,7 +464,7 @@ app.controller('AjouterCoursCtrl',[
 	'$scope',
 	'cours',
 	'auth',
-	function($scope, cours){
+	function($scope, cours, auth){
 		$scope.cours = cours.cours;
 		$scope.currentUserName = auth.currentUserName;
 		$scope.date = new Date();

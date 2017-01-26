@@ -10,7 +10,7 @@ var CourSchema = new mongoose.Schema({
 	prof : {
 		id : {
 			type: mongoose.Schema.Types.ObjectId, 
-			ref:'User'
+			ref:'Prof'
 		}
 	}
 });

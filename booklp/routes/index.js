@@ -165,4 +165,26 @@ router.get('/', function(req, res, next) {
 		});
 	});
 
+//REGISTER
+	router.post('/register', function(req, res, next){
+		if(!req.body.username || !req.body.password){
+	    return res.status(400).json({message: 'Please fill out all fields'});
+	  }
+
+	  var user = new User();
+
+	  user.username = req.body.username;
+	  user.password = md5(req.body.password);
+	  user.prenom = req.body.prenom;
+	  user.nom = req.body.nom;
+	  user.numero = req.body.numero;
+	  user.role = req.body.role;
+
+	  user.save(function (err){
+	    if(err){ return next(err); }
+
+	    return res.json({token: user.generateJWT()})
+	  });
+	});
+
 module.exports = router;

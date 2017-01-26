@@ -1,4 +1,4 @@
-var md5 = require('md5');
+var md5 = require('MD5');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var mongoose = require('mongoose');

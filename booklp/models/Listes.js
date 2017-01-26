@@ -1,12 +1,11 @@
 var mongoose = require('mongoose');
 
 var ListeSchema = new mongoose.Schema({
-	//champs de la base
 	cours: String,
 	prof: {
 		id : {
 			type: mongoose.Schema.Types.ObjectId, 
-			ref:'User'
+			ref:'Prof'
 		}
 	},
 	date: {
@@ -20,7 +19,7 @@ var ListeSchema = new mongoose.Schema({
 	etudiants : [{
 		id : {
 			type: mongoose.Schema.Types.ObjectId,
-			ref : 'User'
+			ref : 'Etudiant'
 		},
 		etat : {
 			type : String,
