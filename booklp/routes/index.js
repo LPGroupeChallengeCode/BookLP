@@ -19,7 +19,7 @@ router.get('/', function(req, res, next) {
 //LOGIN
 	router.post('/login', function(req, res, next){
 		if(!req.body.username || !req.body.password){
-			return res.status(400).json({message: 'Veuillez renseigner tous les champs'});
+			return res.status(400).json({message: 'Veuillez remplir tous les champs'});
 		}
 
 		passport.authenticate('local', function(err, user, info){

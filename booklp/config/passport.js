@@ -9,7 +9,7 @@ passport.use(new LocalStrategy(
 		User.findOne({username: username, password: md5(password)}, function(err, user){
 			if(err){return done(err);}
 			if(!user){
-				return done(null, false,{message: 'Incorrect login credentials'});
+				return done(null, false,{message: 'Pseudo ou mot de passe incorrect'});
 			}
 			return done(null, user);
 		});
