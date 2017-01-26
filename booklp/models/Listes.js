@@ -17,7 +17,7 @@ var ListeSchema = new mongoose.Schema({
 		numero : String,
 		etat : {
 			type : String,
-			default : 'Present'
+			default : "Present"
 		},
 		date :{
 			type : Date,
@@ -36,14 +36,24 @@ ListeSchema.virtual('id').get(function(){
 
 ListeSchema.methods.changeStatus = function(st){
 	if(this.status === 'OPEN'){
+		this.status = 'LATE';
+		this.save(st);
+	}else if(this.status === 'LATE'){
 		this.status = 'CLOSE';
 		this.save(st);
 	};
 };
 
 ListeSchema.methods.changePresence = function(st){
-	this.etudiants.etat = 'Present';
-	this.save(st);
+	if(this.status === 'OPEN'){
+		this.etudiants.etat = 'Present';
+		console.log(this.etudiants.etat);
+		this.save(st);
+	}else if(this.status === 'LATE'){
+		this.etudiants.etat = 'Retard';
+		console.log(this.etudiants.etat);
+		this.save(st);
+	};
 }
 
 mongoose.model('Liste', ListeSchema);
