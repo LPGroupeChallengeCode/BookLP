@@ -123,9 +123,10 @@ router.get('/', function(req, res, next) {
 	
 		// creation objet
 		var liste = new Liste(req.body);
+
 		//assignation valeurs
 		liste.cours = req.body.cours;
-		liste.prof = req.payload.nom;
+		liste.prof = req.body.prof;
 		liste.date = req.body.date;
 		liste.periode = req.body.periode;
 		//save
@@ -149,9 +150,9 @@ router.get('/', function(req, res, next) {
 	router.post('/liste/:liste/student', auth, function(req, res, next){
 
 		var student = new User(req.body);
-		student.nom = req.payload.nom;
-		student.prenom = req.payload.prenom;
-		student.numero = req.payload.numero;
+		student.nom = req.body.nom;
+		student.prenom = req.body.prenom;
+		student.numero = req.body.numero;
 		req.liste.etudiants.push(student);
 		req.liste.save(function(err, student){
 			if(err){console.log(err); return next(err);}
