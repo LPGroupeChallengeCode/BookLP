@@ -4,11 +4,20 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var passport = require('passport');
+var mongoose = require('mongoose');
+
+require('./models/Cours');
+require('./models/Users');
+require('./models/Listes');
+require('./config/passport');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+mongoose.connect('mongodb://localhost/booklp');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
