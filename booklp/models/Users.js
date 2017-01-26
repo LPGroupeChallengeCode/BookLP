@@ -11,7 +11,7 @@ var UserSchema = new mongoose.Schema({
 	},
 	nom : String,
 	prenom : String,
-	pseudo : {
+	username : {
 		type : String,
 		unique : true
 	},
