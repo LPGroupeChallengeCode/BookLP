@@ -21,7 +21,7 @@ app.config([
 						}
 					}
 				}]
-			});
+			})
 			//espace prof
 			.state('espaceProf',{
 				url: '/espaceProf',
@@ -62,7 +62,7 @@ app.config([
 			.state('ajouterListe', {
 				url: '/ajouterListe/:id',
 				templateUrl: '/ajouterListe.html',
-				controller: 'AjouterListeCtrl'
+				controller: 'AjouterListeCtrl',
 				resolve: {
 					cour: ['$stateParams', 'cours',
 					function($stateParams, cours){
