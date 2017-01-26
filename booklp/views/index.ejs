@@ -3,8 +3,6 @@
 		<title>BookLP</title>
 		<!-- Bootstrap Core CSS -->
 	    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
-		<link href="/stylesheets/style.css" rel="stylesheet">
-		
 
 	    <!-- Custom CSS -->
 	    <link href="/stylesheets/landing-page.css" rel="stylesheet">
@@ -73,10 +71,6 @@
 
 			<script type="text/ng-template" id="/login.html">
 
-				<div ng-show="error" class="alert alert-danger row">
-		    		<span>{{ error.message }}</span>
-		  		</div>
-
 				<!-- Header -->
 				<a name="about"></a>
 				<div class="intro-header">
@@ -110,6 +104,10 @@
 										          		<h4 class="modal-title">Identifiez-vous</h4>
 										        	</div>
 
+										        	<div style="margin-right: 1px; margin-left: 1px;" ng-show="error" class="alert alert-danger row">
+		    											<span>{{error.data.message}}</span>
+		  											</div>
+
 										        	<form ng-submit="logIn()" role="form" id="loginform">
 										        		<div class="form-group">
 										        			<label for="username" class="sr-only">Identifiant</label>
@@ -118,10 +116,7 @@
 										        		<label for="password" class="sr-only">Mot de passe</label>
 										        		<input type="password" class="form-control input-lg input-block" id="password" name="password" ng-model="user.password" placeholder="Mot de passe">
 										        		<div class="form-group">
-										        			<button type="submit" class="btn btn-primary btn-lg btn-block" id="submitform" >Connexion </button>
-										        		</div>
-										        		<div class="modal-footer">
-										        			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+										        			<button type="submit" class="btn btn-primary btn-lg btn-block" id="submitform"  style="margin-top: 15px;">Connexion </button>
 										        		</div>
 										        	</form>
 										        </div>

@@ -163,7 +163,7 @@ app.factory('auth', ['$http', '$window',
 		};
 
 		auth.logIn = function(user){
-			return $http.post('/login', user).success(function(data){
+			return $http.post('/login', user).then(function(data){
 				auth.saveToken(data.token);
 			});
 		};
@@ -309,7 +309,7 @@ app.controller('LoginCtrl', [
 		$scope.user = {};
 
 		$scope.logIn = function(){
-			auth.logIn($scope.user).error(function(error){
+			auth.logIn($scope.user).catch(function(error){
 				$scope.error = error;
 			}).then(function(){
 				//go selon role
@@ -317,7 +317,7 @@ app.controller('LoginCtrl', [
 				if($scope.isProf()){
 					$state.go('espaceProf');
 				}
-				else{
+				else if(!$scope.isProf()){
 					$state.go('espaceEtudiant');
 				}
 			});
